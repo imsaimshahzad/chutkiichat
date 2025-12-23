@@ -20,7 +20,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
 
   useEffect(() => {
     // Load existing messages
-    setMessages(getMessages(sessionCode));
+    const existingMessages = getMessages(sessionCode);
     
     // Add join message
     const joinMessage: Message = {
@@ -30,12 +30,13 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
       timestamp: new Date(),
       isOwn: false,
     };
+    
     addMessage(sessionCode, joinMessage);
-    setMessages(prev => [...prev, joinMessage]);
+    setMessages([...existingMessages, joinMessage]);
     
     // Focus input
     inputRef.current?.focus();
-  }, [sessionCode, userName]);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

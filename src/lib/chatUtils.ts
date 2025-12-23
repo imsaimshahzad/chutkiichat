@@ -21,7 +21,9 @@ export const generateSessionCode = (): string => {
 
 // Check if a session exists
 export const sessionExists = (code: string): boolean => {
-  return activeSessions.has(code);
+  const exists = activeSessions.has(code);
+  console.log(`Checking session ${code}: ${exists ? 'EXISTS' : 'NOT FOUND'}`, Array.from(activeSessions.keys()));
+  return exists;
 };
 
 // Generate anonymous name
@@ -43,8 +45,10 @@ export const generateAnonymousName = (): string => {
 };
 
 // Generate unique ID
+let idCounter = 0;
 export const generateId = (): string => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  idCounter++;
+  return Date.now().toString(36) + Math.random().toString(36).substr(2) + idCounter;
 };
 
 // Format time
@@ -61,6 +65,7 @@ export const createSession = (code: string, creatorName: string) => {
     messages: [], 
     participants: [creatorName] 
   });
+  console.log(`Session created: ${code}`, Array.from(activeSessions.keys()));
 };
 
 export const joinSession = (code: string, userName: string): boolean => {

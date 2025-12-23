@@ -1,11 +1,27 @@
-// Generate random session code
+// Message type
+export interface Message {
+  id: string;
+  sender: string;
+  content: string;
+  timestamp: Date;
+  isOwn: boolean;
+}
+
+// Session storage for active sessions (in-memory simulation)
+const activeSessions = new Map<string, { messages: Message[], participants: string[] }>();
+
+// Generate random 6-digit numeric session code
 export const generateSessionCode = (): string => {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = '';
   for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+    code += Math.floor(Math.random() * 10).toString();
   }
   return code;
+};
+
+// Check if a session exists
+export const sessionExists = (code: string): boolean => {
+  return activeSessions.has(code);
 };
 
 // Generate anonymous name
@@ -26,15 +42,6 @@ export const generateAnonymousName = (): string => {
   return `${adjective}${noun}${number}`;
 };
 
-// Message type
-export interface Message {
-  id: string;
-  sender: string;
-  content: string;
-  timestamp: Date;
-  isOwn: boolean;
-}
-
 // Generate unique ID
 export const generateId = (): string => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -48,9 +55,6 @@ export const formatTime = (date: Date): string => {
     hour12: true 
   });
 };
-
-// Session storage for active sessions (in-memory simulation)
-const activeSessions = new Map<string, { messages: Message[], participants: string[] }>();
 
 export const createSession = (code: string, creatorName: string) => {
   activeSessions.set(code, { 

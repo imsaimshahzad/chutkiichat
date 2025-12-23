@@ -22,14 +22,25 @@ export const generateSessionCode = (): string => {
 // Check if a session exists in database
 export const sessionExists = async (code: string): Promise<boolean> => {
   console.log('Checking if session exists:', code);
-  const { data, error } = await supabase
-    .from('sessions')
-    .select('code')
-    .eq('code', code)
-    .maybeSingle();
-  
-  console.log('Session check result:', { data, error });
-  return !error && data !== null;
+  try {
+    const { data, error } = await supabase
+      .from('sessions')
+      .select('code')
+      .eq('code', code.trim())
+      .maybeSingle();
+    
+    console.log('Session check result:', { data, error, codeSearched: code.trim() });
+    
+    if (error) {
+      console.error('Session check error:', error);
+      return false;
+    }
+    
+    return data !== null;
+  } catch (err) {
+    console.error('Session check exception:', err);
+    return false;
+  }
 };
 
 // Generate anonymous name
@@ -78,16 +89,29 @@ export const addMessage = async (
   content: string, 
   isSystem: boolean = false
 ): Promise<boolean> => {
-  const { error } = await supabase
-    .from('messages')
-    .insert({
-      session_code: sessionCode,
-      sender,
-      content,
-      is_system: isSystem
-    });
-  
-  return !error;
+  console.log('Adding message:', { sessionCode, sender, content, isSystem });
+  try {
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({
+        session_code: sessionCode,
+        sender,
+        content,
+        is_system: isSystem
+      })
+      .select();
+    
+    console.log('Add message result:', { data, error });
+    
+    if (error) {
+      console.error('Add message error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Add message exception:', err);
+    return false;
+  }
 };
 
 // Get messages for a session

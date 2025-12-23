@@ -20,9 +20,14 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    console.log('ChatRoom mounted for session:', sessionCode, 'user:', userName);
+    
     // Load existing messages
     const loadMessages = async () => {
+      console.log('Loading messages for session:', sessionCode);
       const existingMessages = await getMessages(sessionCode);
+      console.log('Loaded messages:', existingMessages);
+      
       const messagesWithOwnership = existingMessages.map(msg => ({
         ...msg,
         isOwn: msg.sender === userName
@@ -30,13 +35,15 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
       setMessages(messagesWithOwnership);
       
       // Add join message
-      await addMessage(sessionCode, "System", `${userName} joined the chat`, true);
+      const success = await addMessage(sessionCode, "System", `${userName} joined the chat`, true);
+      console.log('Join message added:', success);
     };
     
     loadMessages();
     inputRef.current?.focus();
 
     // Subscribe to realtime messages
+    console.log('Setting up realtime subscription for session:', sessionCode);
     const channel = supabase
       .channel(`messages-${sessionCode}`)
       .on(
@@ -48,6 +55,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
           filter: `session_code=eq.${sessionCode}`
         },
         (payload) => {
+          console.log('Realtime message received:', payload);
           const newMsg = payload.new as {
             id: string;
             sender: string;
@@ -59,9 +67,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
           setMessages(prev => {
             // Check if message already exists
             if (prev.some(m => m.id === newMsg.id)) {
+              console.log('Message already exists, skipping:', newMsg.id);
               return prev;
             }
             
+            console.log('Adding new message to state:', newMsg);
             return [...prev, {
               id: newMsg.id,
               sender: newMsg.sender,
@@ -73,9 +83,12 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
           });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
 
     return () => {
+      console.log('Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
   }, [sessionCode, userName]);

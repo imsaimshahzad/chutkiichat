@@ -21,12 +21,14 @@ export const generateSessionCode = (): string => {
 
 // Check if a session exists in database
 export const sessionExists = async (code: string): Promise<boolean> => {
+  console.log('Checking if session exists:', code);
   const { data, error } = await supabase
     .from('sessions')
     .select('code')
     .eq('code', code)
     .maybeSingle();
   
+  console.log('Session check result:', { data, error });
   return !error && data !== null;
 };
 
@@ -59,10 +61,13 @@ export const formatTime = (date: Date): string => {
 
 // Create a new session in database
 export const createSession = async (code: string): Promise<boolean> => {
-  const { error } = await supabase
+  console.log('Creating session:', code);
+  const { data, error } = await supabase
     .from('sessions')
-    .insert({ code });
+    .insert({ code })
+    .select();
   
+  console.log('Create session result:', { data, error });
   return !error;
 };
 

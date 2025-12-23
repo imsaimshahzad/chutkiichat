@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
-import { generateAnonymousName, joinSession, createSession } from "@/lib/chatUtils";
+import NumberKeyboard from "./NumberKeyboard";
+import { generateAnonymousName, joinSession, sessionExists } from "@/lib/chatUtils";
 import { toast } from "sonner";
 
 interface JoinSessionProps {
@@ -14,33 +14,63 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleNumberPress = (num: string) => {
+    if (code.length < 6) {
+      setCode((prev) => prev + num);
+    }
+  };
+
+  const handleDelete = () => {
+    setCode((prev) => prev.slice(0, -1));
+  };
+
+  const handleClear = () => {
+    setCode("");
+  };
+
   const handleJoin = () => {
-    const trimmedCode = code.trim().toUpperCase();
+    const trimmedCode = code.trim();
     
     if (trimmedCode.length !== 6) {
-      toast.error("Please enter a valid 6-character code");
+      toast.error("Please enter a valid 6-digit code");
+      return;
+    }
+
+    // Check if session exists
+    if (!sessionExists(trimmedCode)) {
+      toast.error("Session not found. Please check the code.");
       return;
     }
 
     setIsLoading(true);
     const userName = generateAnonymousName();
 
-    // Simulate join attempt (in real app, this would validate with server)
     setTimeout(() => {
-      // For demo purposes, we'll create the session if it doesn't exist
-      // In production, you'd validate against a real backend
-      createSession(trimmedCode, userName);
       joinSession(trimmedCode, userName);
       toast.success(`Joined as ${userName}`);
       onSessionJoined(trimmedCode, userName);
       setIsLoading(false);
-    }, 500);
+    }, 300);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleJoin();
+  // Render code display boxes
+  const renderCodeDisplay = () => {
+    const boxes = [];
+    for (let i = 0; i < 6; i++) {
+      boxes.push(
+        <div
+          key={i}
+          className={`w-12 h-14 flex items-center justify-center rounded-xl text-2xl font-bold font-mono transition-all duration-200 ${
+            code[i]
+              ? "bg-accent/20 text-accent border-2 border-accent"
+              : "bg-secondary/50 text-muted-foreground border-2 border-transparent"
+          }`}
+        >
+          {code[i] || "•"}
+        </div>
+      );
     }
+    return boxes;
   };
 
   return (
@@ -56,19 +86,22 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
       </div>
 
       <div className="space-y-4">
-        <Input
-          placeholder="Enter 6-digit code"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase().slice(0, 6))}
-          onKeyDown={handleKeyDown}
-          className="font-mono text-center text-xl tracking-[0.3em] uppercase"
-          maxLength={6}
+        {/* Code Display */}
+        <div className="flex justify-center gap-2">
+          {renderCodeDisplay()}
+        </div>
+
+        {/* Number Keyboard */}
+        <NumberKeyboard
+          onNumberPress={handleNumberPress}
+          onDelete={handleDelete}
+          onClear={handleClear}
         />
 
         <Button 
           variant="accent"
           size="lg" 
-          className="w-full"
+          className="w-full mt-4"
           onClick={handleJoin}
           disabled={code.length !== 6 || isLoading}
         >

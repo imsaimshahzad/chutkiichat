@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { Send, ArrowLeft, Copy, Check, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Message, generateId, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
+import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface ChatRoomProps {
@@ -20,42 +21,79 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
 
   useEffect(() => {
     // Load existing messages
-    const existingMessages = getMessages(sessionCode);
-    
-    // Add join message
-    const joinMessage: Message = {
-      id: generateId(),
-      sender: "System",
-      content: `${userName} joined the chat`,
-      timestamp: new Date(),
-      isOwn: false,
+    const loadMessages = async () => {
+      const existingMessages = await getMessages(sessionCode);
+      const messagesWithOwnership = existingMessages.map(msg => ({
+        ...msg,
+        isOwn: msg.sender === userName
+      }));
+      setMessages(messagesWithOwnership);
+      
+      // Add join message
+      await addMessage(sessionCode, "System", `${userName} joined the chat`, true);
     };
     
-    addMessage(sessionCode, joinMessage);
-    setMessages([...existingMessages, joinMessage]);
-    
-    // Focus input
+    loadMessages();
     inputRef.current?.focus();
-  }, []);
+
+    // Subscribe to realtime messages
+    const channel = supabase
+      .channel(`messages-${sessionCode}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `session_code=eq.${sessionCode}`
+        },
+        (payload) => {
+          const newMsg = payload.new as {
+            id: string;
+            sender: string;
+            content: string;
+            is_system: boolean;
+            created_at: string;
+          };
+          
+          setMessages(prev => {
+            // Check if message already exists
+            if (prev.some(m => m.id === newMsg.id)) {
+              return prev;
+            }
+            
+            return [...prev, {
+              id: newMsg.id,
+              sender: newMsg.sender,
+              content: newMsg.content,
+              timestamp: new Date(newMsg.created_at),
+              isOwn: newMsg.sender === userName,
+              isSystem: newMsg.is_system
+            }];
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [sessionCode, userName]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!newMessage.trim()) return;
 
-    const message: Message = {
-      id: generateId(),
-      sender: userName,
-      content: newMessage.trim(),
-      timestamp: new Date(),
-      isOwn: true,
-    };
-
-    addMessage(sessionCode, message);
-    setMessages(prev => [...prev, message]);
+    const content = newMessage.trim();
     setNewMessage("");
+    
+    const success = await addMessage(sessionCode, userName, content, false);
+    if (!success) {
+      toast.error("Failed to send message");
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -118,20 +156,20 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
           >
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                message.sender === "System"
+                message.isSystem
                   ? "bg-secondary/50 text-muted-foreground text-center text-sm mx-auto"
                   : message.isOwn
                   ? "bg-primary text-primary-foreground rounded-br-md"
                   : "glass-card rounded-bl-md"
               }`}
             >
-              {message.sender !== "System" && !message.isOwn && (
+              {!message.isSystem && !message.isOwn && (
                 <p className="text-xs text-accent font-semibold mb-1">
                   {message.sender}
                 </p>
               )}
               <p className="break-words">{message.content}</p>
-              {message.sender !== "System" && (
+              {!message.isSystem && (
                 <p className={`text-xs mt-1 ${message.isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                   {formatTime(message.timestamp)}
                 </p>

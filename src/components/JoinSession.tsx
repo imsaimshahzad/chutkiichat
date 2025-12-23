@@ -3,7 +3,7 @@ import { Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SessionCard from "./SessionCard";
 import NumberKeyboard from "./NumberKeyboard";
-import { generateAnonymousName, joinSession, sessionExists } from "@/lib/chatUtils";
+import { generateAnonymousName, sessionExists } from "@/lib/chatUtils";
 import { toast } from "sonner";
 
 interface JoinSessionProps {
@@ -28,7 +28,7 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
     setCode("");
   };
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     const trimmedCode = code.trim();
     
     if (trimmedCode.length !== 4) {
@@ -36,21 +36,21 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
       return;
     }
 
-    // Check if session exists
-    if (!sessionExists(trimmedCode)) {
+    setIsLoading(true);
+
+    // Check if session exists in database
+    const exists = await sessionExists(trimmedCode);
+    
+    if (!exists) {
       toast.error("Session not found. Please check the code.");
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
     const userName = generateAnonymousName();
-
-    setTimeout(() => {
-      joinSession(trimmedCode, userName);
-      toast.success(`Joined as ${userName}`);
-      onSessionJoined(trimmedCode, userName);
-      setIsLoading(false);
-    }, 300);
+    toast.success(`Joined as ${userName}`);
+    onSessionJoined(trimmedCode, userName);
+    setIsLoading(false);
   };
 
   // Render code display boxes

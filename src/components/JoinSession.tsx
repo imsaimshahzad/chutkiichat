@@ -15,7 +15,7 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNumberPress = (num: string) => {
-    if (code.length < 6) {
+    if (code.length < 4) {
       setCode((prev) => prev + num);
     }
   };
@@ -31,8 +31,8 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
   const handleJoin = () => {
     const trimmedCode = code.trim();
     
-    if (trimmedCode.length !== 6) {
-      toast.error("Please enter a valid 6-digit code");
+    if (trimmedCode.length !== 4) {
+      toast.error("Please enter a valid 4-digit code");
       return;
     }
 
@@ -56,17 +56,17 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
   // Render code display boxes
   const renderCodeDisplay = () => {
     const boxes = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 4; i++) {
       boxes.push(
         <div
           key={i}
-          className={`w-12 h-14 flex items-center justify-center rounded-xl text-2xl font-bold font-mono transition-all duration-200 ${
+          className={`w-14 h-16 flex items-center justify-center rounded-xl text-3xl font-bold font-mono transition-all duration-200 ${
             code[i]
-              ? "bg-accent/20 text-accent border-2 border-accent"
-              : "bg-secondary/50 text-muted-foreground border-2 border-transparent"
+              ? "bg-accent/20 text-accent border-2 border-accent scale-105"
+              : "bg-secondary/50 text-muted-foreground border-2 border-border"
           }`}
         >
-          {code[i] || "•"}
+          {code[i] || ""}
         </div>
       );
     }
@@ -103,7 +103,7 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
           size="lg" 
           className="w-full mt-4"
           onClick={handleJoin}
-          disabled={code.length !== 6 || isLoading}
+          disabled={code.length !== 4 || isLoading}
         >
           {isLoading ? "Joining..." : "Join Chat"}
           <ArrowRight className="w-5 h-5" />

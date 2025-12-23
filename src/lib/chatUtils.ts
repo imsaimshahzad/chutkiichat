@@ -10,10 +10,10 @@ export interface Message {
 // Session storage for active sessions (in-memory simulation)
 const activeSessions = new Map<string, { messages: Message[], participants: string[] }>();
 
-// Generate random 6-digit numeric session code
+// Generate random 4-digit numeric session code
 export const generateSessionCode = (): string => {
   let code = '';
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 4; i++) {
     code += Math.floor(Math.random() * 10).toString();
   }
   return code;

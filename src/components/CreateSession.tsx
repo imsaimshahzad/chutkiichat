@@ -13,12 +13,21 @@ const CreateSession = ({ onSessionCreated }: CreateSessionProps) => {
   const [sessionCode, setSessionCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [userName] = useState(generateAnonymousName());
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    setIsCreating(true);
     const code = generateSessionCode();
-    setSessionCode(code);
-    createSession(code, userName);
-    toast.success("Session created! Share the code with others.");
+    
+    const success = await createSession(code);
+    
+    if (success) {
+      setSessionCode(code);
+      toast.success("Session created! Share the code with others.");
+    } else {
+      toast.error("Failed to create session. Try again.");
+    }
+    setIsCreating(false);
   };
 
   const handleCopy = async () => {
@@ -54,8 +63,9 @@ const CreateSession = ({ onSessionCreated }: CreateSessionProps) => {
           size="lg" 
           className="w-full"
           onClick={handleCreate}
+          disabled={isCreating}
         >
-          Create New Session
+          {isCreating ? "Creating..." : "Create New Session"}
           <Plus className="w-5 h-5" />
         </Button>
       ) : (

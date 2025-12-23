@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 // Message type
 export interface Message {
   id: string;
@@ -5,10 +7,8 @@ export interface Message {
   content: string;
   timestamp: Date;
   isOwn: boolean;
+  isSystem?: boolean;
 }
-
-// Session storage for active sessions (in-memory simulation)
-const activeSessions = new Map<string, { messages: Message[], participants: string[] }>();
 
 // Generate random 4-digit numeric session code
 export const generateSessionCode = (): string => {
@@ -19,11 +19,15 @@ export const generateSessionCode = (): string => {
   return code;
 };
 
-// Check if a session exists
-export const sessionExists = (code: string): boolean => {
-  const exists = activeSessions.has(code);
-  console.log(`Checking session ${code}: ${exists ? 'EXISTS' : 'NOT FOUND'}`, Array.from(activeSessions.keys()));
-  return exists;
+// Check if a session exists in database
+export const sessionExists = async (code: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('code')
+    .eq('code', code)
+    .maybeSingle();
+  
+  return !error && data !== null;
 };
 
 // Generate anonymous name
@@ -44,13 +48,6 @@ export const generateAnonymousName = (): string => {
   return `${adjective}${noun}${number}`;
 };
 
-// Generate unique ID
-let idCounter = 0;
-export const generateId = (): string => {
-  idCounter++;
-  return Date.now().toString(36) + Math.random().toString(36).substr(2) + idCounter;
-};
-
 // Format time
 export const formatTime = (date: Date): string => {
   return date.toLocaleTimeString('en-US', { 
@@ -60,36 +57,50 @@ export const formatTime = (date: Date): string => {
   });
 };
 
-export const createSession = (code: string, creatorName: string) => {
-  activeSessions.set(code, { 
-    messages: [], 
-    participants: [creatorName] 
-  });
-  console.log(`Session created: ${code}`, Array.from(activeSessions.keys()));
+// Create a new session in database
+export const createSession = async (code: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('sessions')
+    .insert({ code });
+  
+  return !error;
 };
 
-export const joinSession = (code: string, userName: string): boolean => {
-  const session = activeSessions.get(code);
-  if (session) {
-    if (!session.participants.includes(userName)) {
-      session.participants.push(userName);
-    }
-    return true;
-  }
-  return false;
+// Add a message to the database
+export const addMessage = async (
+  sessionCode: string, 
+  sender: string, 
+  content: string, 
+  isSystem: boolean = false
+): Promise<boolean> => {
+  const { error } = await supabase
+    .from('messages')
+    .insert({
+      session_code: sessionCode,
+      sender,
+      content,
+      is_system: isSystem
+    });
+  
+  return !error;
 };
 
-export const getSession = (code: string) => {
-  return activeSessions.get(code);
-};
-
-export const addMessage = (code: string, message: Message) => {
-  const session = activeSessions.get(code);
-  if (session) {
-    session.messages.push(message);
-  }
-};
-
-export const getMessages = (code: string): Message[] => {
-  return activeSessions.get(code)?.messages || [];
+// Get messages for a session
+export const getMessages = async (sessionCode: string): Promise<Message[]> => {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('session_code', sessionCode)
+    .order('created_at', { ascending: true });
+  
+  if (error || !data) return [];
+  
+  return data.map(msg => ({
+    id: msg.id,
+    sender: msg.sender,
+    content: msg.content,
+    timestamp: new Date(msg.created_at),
+    isOwn: false, // Will be set by component
+    isSystem: msg.is_system
+  }));
 };

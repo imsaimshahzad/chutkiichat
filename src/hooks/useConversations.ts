@@ -225,10 +225,44 @@ export const useConversations = () => {
     }
   };
 
+  const deleteConversation = async (conversationId: string): Promise<boolean> => {
+    if (!user) return false;
+
+    try {
+      // Delete all messages first
+      await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('conversation_id', conversationId);
+
+      // Delete all participants
+      await supabase
+        .from('conversation_participants')
+        .delete()
+        .eq('conversation_id', conversationId);
+
+      // Delete the conversation
+      const { error } = await supabase
+        .from('conversations')
+        .delete()
+        .eq('id', conversationId);
+
+      if (error) throw error;
+
+      // Update local state
+      setConversations(prev => prev.filter(c => c.id !== conversationId));
+      return true;
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      return false;
+    }
+  };
+
   return {
     conversations,
     loading,
     createConversation,
+    deleteConversation,
     refreshConversations: fetchConversations,
   };
 };

@@ -10,12 +10,11 @@ export interface Message {
   isSystem?: boolean;
 }
 
-// Generate cryptographically secure 6-character alphanumeric session code
+// Generate 4-digit numeric session code
 export const generateSessionCode = (): string => {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed confusing chars: 0, O, I, 1
-  const array = new Uint8Array(6);
+  const array = new Uint8Array(4);
   crypto.getRandomValues(array);
-  return Array.from(array, byte => chars[byte % chars.length]).join('');
+  return Array.from(array, byte => (byte % 10).toString()).join('');
 };
 
 // Check if a session exists in database

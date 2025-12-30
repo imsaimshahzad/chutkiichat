@@ -7,16 +7,16 @@ const LandingHero = () => {
       <div className="flex items-center justify-center gap-4 mb-4 sm:mb-6">
         <div className="relative">
           <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse-soft" />
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-            <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 absolute -top-2 -right-2 animate-float" />
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/30">
+            <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-accent absolute -top-2 -right-2 animate-float" />
           </div>
         </div>
       </div>
       
       {/* App Name */}
       <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-3 sm:mb-4">
-        <span className="text-gradient-chutki">Chutkii</span>
+        <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">Chutkii</span>
         <span className="text-foreground">Chat</span>
       </h1>
       

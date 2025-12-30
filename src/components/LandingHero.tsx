@@ -24,7 +24,7 @@ const LandingHero = () => {
       <div className="flex items-center justify-center gap-2 mb-6">
         <Sparkles className="w-5 h-5 text-primary animate-sparkle" />
         <p className="text-lg md:text-xl text-muted-foreground font-medium">
-          Chat in Chutki, Disappear in Chutki!
+          Chat in Chutkii, Disappear in Chutkii!
         </p>
         <Sparkles className="w-5 h-5 text-primary animate-sparkle" />
       </div>

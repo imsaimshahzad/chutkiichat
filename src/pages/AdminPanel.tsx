@@ -34,7 +34,7 @@ import { toast } from 'sonner';
 const AdminPanel = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { users, loading, isAdmin, blockUser, updateUserRole, updateUser, deleteUser, refreshUsers } = useAdminUsers();
+  const { users, loading, isAdmin, isSuperAdmin, blockUser, updateUserRole, updateUser, deleteUser, refreshUsers } = useAdminUsers();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
@@ -256,7 +256,15 @@ const AdminPanel = () => {
                             )}
                           </div>
                           <div>
-                            <p className="font-medium">{u.display_name || u.username}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{u.display_name || u.username}</p>
+                              {isSuperAdmin(u.username) && (
+                                <Badge variant="outline" className="gap-1 border-yellow-500 text-yellow-500">
+                                  <Crown className="h-3 w-3" />
+                                  God
+                                </Badge>
+                              )}
+                            </div>
                             <p className="text-sm text-muted-foreground">@{u.username}</p>
                           </div>
                         </div>
@@ -270,7 +278,7 @@ const AdminPanel = () => {
                         <Select
                           value={u.role}
                           onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
-                          disabled={u.id === user?.id}
+                          disabled={u.id === user?.id || isSuperAdmin(u.username)}
                         >
                           <SelectTrigger className="w-24">
                             <SelectValue />
@@ -327,7 +335,8 @@ const AdminPanel = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleBlockToggle(u.id, u.is_blocked)}
-                            disabled={u.id === user?.id}
+                            disabled={u.id === user?.id || isSuperAdmin(u.username)}
+                            title={isSuperAdmin(u.username) ? 'Cannot block super-admin' : undefined}
                           >
                             {u.is_blocked ? (
                               <ShieldOff className="h-4 w-4 text-green-500" />
@@ -341,7 +350,8 @@ const AdminPanel = () => {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                disabled={u.id === user?.id}
+                                disabled={u.id === user?.id || isSuperAdmin(u.username)}
+                                title={isSuperAdmin(u.username) ? 'Cannot delete super-admin' : undefined}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
@@ -389,7 +399,15 @@ const AdminPanel = () => {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium truncate">{u.display_name || u.username}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium truncate">{u.display_name || u.username}</p>
+                            {isSuperAdmin(u.username) && (
+                              <Badge variant="outline" className="gap-1 border-yellow-500 text-yellow-500 text-xs">
+                                <Crown className="h-3 w-3" />
+                                God
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-sm text-muted-foreground truncate">@{u.username}</p>
                         </div>
                       </div>
@@ -415,7 +433,7 @@ const AdminPanel = () => {
                         <Select
                           value={u.role}
                           onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
-                          disabled={u.id === user?.id}
+                          disabled={u.id === user?.id || isSuperAdmin(u.username)}
                         >
                           <SelectTrigger className="w-28 h-9">
                             <SelectValue />
@@ -455,7 +473,7 @@ const AdminPanel = () => {
                           size="icon"
                           className="h-9 w-9"
                           onClick={() => handleBlockToggle(u.id, u.is_blocked)}
-                          disabled={u.id === user?.id}
+                          disabled={u.id === user?.id || isSuperAdmin(u.username)}
                         >
                           {u.is_blocked ? (
                             <ShieldOff className="h-4 w-4 text-green-500" />
@@ -470,7 +488,7 @@ const AdminPanel = () => {
                               variant="ghost"
                               size="icon"
                               className="h-9 w-9"
-                              disabled={u.id === user?.id}
+                              disabled={u.id === user?.id || isSuperAdmin(u.username)}
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>

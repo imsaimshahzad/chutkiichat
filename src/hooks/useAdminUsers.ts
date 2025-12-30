@@ -15,11 +15,19 @@ export interface AdminUser {
   role: 'admin' | 'user';
 }
 
+// Protected super-admin username that cannot be modified, blocked, or deleted
+const PROTECTED_SUPER_ADMIN_USERNAME = 'Admin';
+
 export const useAdminUsers = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check if a user is the protected super-admin
+  const isSuperAdmin = (username: string) => {
+    return username.toLowerCase() === PROTECTED_SUPER_ADMIN_USERNAME.toLowerCase();
+  };
 
   const checkAdminStatus = useCallback(async () => {
     if (!user) return false;
@@ -84,6 +92,12 @@ export const useAdminUsers = () => {
 
   const blockUser = async (userId: string, blocked: boolean) => {
     try {
+      // Check if user is super-admin
+      const targetUser = users.find(u => u.id === userId);
+      if (targetUser && isSuperAdmin(targetUser.username)) {
+        throw new Error('Cannot block the super-admin');
+      }
+
       const { error } = await supabase
         .from('profiles')
         .update({ is_blocked: blocked })
@@ -103,6 +117,12 @@ export const useAdminUsers = () => {
 
   const updateUserRole = async (userId: string, role: 'admin' | 'user') => {
     try {
+      // Check if user is super-admin - cannot demote
+      const targetUser = users.find(u => u.id === userId);
+      if (targetUser && isSuperAdmin(targetUser.username) && role !== 'admin') {
+        throw new Error('Cannot change the super-admin role');
+      }
+
       // First delete existing role
       await supabase
         .from('user_roles')
@@ -151,6 +171,12 @@ export const useAdminUsers = () => {
 
   const deleteUser = async (userId: string) => {
     try {
+      // Check if user is super-admin
+      const targetUser = users.find(u => u.id === userId);
+      if (targetUser && isSuperAdmin(targetUser.username)) {
+        throw new Error('Cannot delete the super-admin');
+      }
+
       // Delete profile (cascade will handle related data)
       const { error } = await supabase
         .from('profiles')
@@ -171,6 +197,7 @@ export const useAdminUsers = () => {
     users,
     loading,
     isAdmin,
+    isSuperAdmin,
     blockUser,
     updateUserRole,
     updateUser,

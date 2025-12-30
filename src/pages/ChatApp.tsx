@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConversations, Conversation } from '@/hooks/useConversations';
 import { useChatMessages, ChatMessage } from '@/hooks/useChatMessages';
@@ -6,7 +6,11 @@ import { useContacts } from '@/hooks/useContacts';
 import { useAllUsers } from '@/hooks/useAllUsers';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useAppViewportHeight } from '@/hooks/useAppViewportHeight';
+import { useStarredMessages } from '@/hooks/useStarredMessages';
+import { useLongPress } from '@/hooks/useLongPress';
 import ProfileSettings from '@/components/ProfileSettings';
+import MessageActionSheet from '@/components/MessageActionSheet';
+import ForwardMessageDialog from '@/components/ForwardMessageDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,10 +40,13 @@ import {
   Ban,
   UserX,
   Eraser,
+  X,
+  Star,
 } from 'lucide-react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 const ChatApp = () => {
   useAppViewportHeight();
@@ -50,6 +57,7 @@ const ChatApp = () => {
   const { contacts, searchUsers, addContact } = useContacts();
   const { users: allUsers, loading: usersLoading } = useAllUsers();
   const { blockUser, unblockUser, isBlocked } = useBlockedUsers();
+  const { isStarred, toggleStar } = useStarredMessages();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const { messages, loading: msgsLoading, sendMessage, deleteMessage, clearChat } = useChatMessages(selectedConversation?.id || null);
   
@@ -66,6 +74,13 @@ const ChatApp = () => {
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
+  
+  // Long-press menu state
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(null);
+  const [replyToMessage, setReplyToMessage] = useState<ChatMessage | null>(null);
+  const [forwardDialogOpen, setForwardDialogOpen] = useState(false);
+  const [forwardingMessage, setForwardingMessage] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -154,9 +169,93 @@ const ChatApp = () => {
   const handleSendMessage = async () => {
     if (!messageInput.trim()) return;
     
-    const success = await sendMessage(messageInput);
+    // Handle reply
+    const contentToSend = replyToMessage 
+      ? `> ${replyToMessage.content.substring(0, 50)}${replyToMessage.content.length > 50 ? '...' : ''}\n\n${messageInput}`
+      : messageInput;
+    
+    const success = await sendMessage(contentToSend);
     if (success) {
       setMessageInput('');
+      setReplyToMessage(null);
+    }
+  };
+
+  // Long-press message handlers
+  const handleMessageLongPress = (msg: ChatMessage) => {
+    setSelectedMessage(msg);
+    setActionSheetOpen(true);
+  };
+
+  const handleReply = () => {
+    if (selectedMessage) {
+      setReplyToMessage(selectedMessage);
+      setSelectedMessage(null);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (selectedMessage) {
+      try {
+        await navigator.clipboard.writeText(selectedMessage.content);
+        toast.success('Message copied');
+      } catch {
+        toast.error('Failed to copy');
+      }
+      setSelectedMessage(null);
+    }
+  };
+
+  const handleForwardInit = () => {
+    if (selectedMessage) {
+      setForwardingMessage(selectedMessage.content);
+      setForwardDialogOpen(true);
+      setSelectedMessage(null);
+    }
+  };
+
+  const handleForward = async (conversationId: string) => {
+    if (!forwardingMessage || !user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .insert({
+          conversation_id: conversationId,
+          sender_id: user.id,
+          content: forwardingMessage,
+        });
+
+      if (error) throw error;
+
+      toast.success('Message forwarded');
+      setForwardDialogOpen(false);
+      setForwardingMessage(null);
+    } catch (error) {
+      console.error('Error forwarding message:', error);
+      toast.error('Failed to forward message');
+    }
+  };
+
+  const handleStarMessage = async () => {
+    if (selectedMessage) {
+      const success = await toggleStar(selectedMessage.id);
+      if (success) {
+        toast.success(isStarred(selectedMessage.id) ? 'Message unstarred' : 'Message starred');
+      }
+      setSelectedMessage(null);
+    }
+  };
+
+  const handleDeleteSelectedMessage = async () => {
+    if (selectedMessage) {
+      const success = await deleteMessage(selectedMessage.id);
+      if (success) {
+        toast.success('Message deleted');
+      } else {
+        toast.error('Failed to delete message');
+      }
+      setSelectedMessage(null);
     }
   };
 
@@ -254,6 +353,54 @@ const ChatApp = () => {
   const isParticipantOnline = (conv: Conversation) => {
     if (conv.is_group) return false;
     return conv.participants[0]?.is_online || false;
+  };
+
+  // Message Bubble Component with long-press support
+  const MessageBubble = ({ 
+    message, 
+    isOwn, 
+    isStarred: msgStarred, 
+    onLongPress, 
+    formatMessageTime: fmtTime 
+  }: { 
+    message: ChatMessage; 
+    isOwn: boolean; 
+    isStarred: boolean; 
+    onLongPress: () => void; 
+    formatMessageTime: (d: string) => string;
+  }) => {
+    const longPressHandlers = useLongPress({
+      onLongPress,
+      threshold: 400,
+    });
+
+    return (
+      <div
+        {...longPressHandlers}
+        className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mb-1 select-none`}
+      >
+        <div
+          className={`max-w-[85%] sm:max-w-[70%] px-3 py-1.5 ${
+            isOwn ? 'wa-bubble-sent mr-2' : 'wa-bubble-received ml-2'
+          }`}
+        >
+          <p className="break-words text-[14.5px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
+          <div className={`flex items-center gap-1 mt-0.5 ${isOwn ? 'justify-end' : ''}`}>
+            {msgStarred && <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />}
+            <span className="text-[11px] text-muted-foreground">
+              {fmtTime(message.created_at)}
+            </span>
+            {isOwn && (
+              message.is_read ? (
+                <CheckCheck className="h-4 w-4 text-[hsl(var(--wa-read))]" />
+              ) : (
+                <CheckCheck className="h-4 w-4 text-muted-foreground" />
+              )
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Sidebar content
@@ -599,48 +746,16 @@ const ChatApp = () => {
                 <div className="space-y-1">
                   {messages.map((msg) => {
                     const isOwn = msg.sender_id === user?.id;
+                    const starred = isStarred(msg.id);
                     return (
-                      <DropdownMenu key={msg.id}>
-                        <DropdownMenuTrigger asChild>
-                          <div
-                            className={`flex ${isOwn ? 'justify-end' : 'justify-start'} cursor-pointer mb-1`}
-                          >
-                            <div
-                              className={`max-w-[85%] sm:max-w-[70%] px-3 py-1.5 ${
-                                isOwn ? 'wa-bubble-sent mr-2' : 'wa-bubble-received ml-2'
-                              }`}
-                            >
-                              <p className="break-words text-[14.5px] leading-relaxed">{msg.content}</p>
-                              <div className={`flex items-center gap-1 mt-0.5 ${isOwn ? 'justify-end' : ''}`}>
-                                <span className="text-[11px] text-muted-foreground">
-                                  {formatMessageTime(msg.created_at)}
-                                </span>
-                                {isOwn && (
-                                  msg.is_read ? (
-                                    <CheckCheck className="h-4 w-4 text-[hsl(var(--wa-read))]" />
-                                  ) : (
-                                    <CheckCheck className="h-4 w-4 text-muted-foreground" />
-                                  )
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </DropdownMenuTrigger>
-                        {isOwn && (
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem 
-                              onClick={() => {
-                                setSelectedMessageId(msg.id);
-                                handleDeleteMessage();
-                              }}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete Message
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        )}
-                      </DropdownMenu>
+                      <MessageBubble
+                        key={msg.id}
+                        message={msg}
+                        isOwn={isOwn}
+                        isStarred={starred}
+                        onLongPress={() => handleMessageLongPress(msg)}
+                        formatMessageTime={formatMessageTime}
+                      />
                     );
                   })}
                   <div ref={messagesEndRef} />
@@ -648,6 +763,26 @@ const ChatApp = () => {
               )}
             </div>
           </ScrollArea>
+
+          {/* Reply indicator */}
+          {replyToMessage && (
+            <div className="px-3 pt-2 bg-[hsl(var(--muted))]">
+              <div className="flex items-center gap-2 bg-card rounded-lg p-2 border-l-4 border-primary">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-primary">Replying</p>
+                  <p className="text-sm text-muted-foreground truncate">{replyToMessage.content}</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 flex-shrink-0"
+                  onClick={() => setReplyToMessage(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* WhatsApp-style Message Input */}
           <div className="wa-input-area px-2 py-2 safe-area-inset-bottom flex-shrink-0">
@@ -782,6 +917,31 @@ const ChatApp = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Message Action Sheet */}
+      <MessageActionSheet
+        open={actionSheetOpen}
+        onOpenChange={setActionSheetOpen}
+        message={selectedMessage ? {
+          id: selectedMessage.id,
+          content: selectedMessage.content,
+          isOwn: selectedMessage.sender_id === user?.id,
+          isStarred: isStarred(selectedMessage.id),
+        } : null}
+        onReply={handleReply}
+        onCopy={handleCopy}
+        onForward={handleForwardInit}
+        onStar={handleStarMessage}
+        onDelete={handleDeleteSelectedMessage}
+      />
+
+      {/* Forward Message Dialog */}
+      <ForwardMessageDialog
+        open={forwardDialogOpen}
+        onOpenChange={setForwardDialogOpen}
+        conversations={conversations.filter(c => c.id !== selectedConversation?.id)}
+        onForward={handleForward}
+      />
     </>
   );
 };

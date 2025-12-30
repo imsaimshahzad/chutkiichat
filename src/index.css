@@ -48,6 +48,44 @@
     --shadow-card: 0 8px 30px hsl(220 25% 15% / 0.08);
     --shadow-glow: 0 0 40px hsl(209 100% 65% / 0.25);
   }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 20% 13%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 20% 13%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 209 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 20% 18%;
+    --secondary-foreground: 210 30% 90%;
+
+    --muted: 220 15% 20%;
+    --muted-foreground: 210 15% 60%;
+
+    --accent: 209 100% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 15% 22%;
+    --input: 220 15% 20%;
+    --ring: 209 100% 60%;
+
+    /* ChutkiChat dark mode tokens */
+    --chutki-gradient-soft: linear-gradient(180deg, hsl(220 20% 10%), hsl(220 20% 8%));
+    
+    /* Shadows for dark mode */
+    --shadow-soft: 0 4px 20px hsl(209 100% 65% / 0.2);
+    --shadow-card: 0 8px 30px hsl(0 0% 0% / 0.3);
+    --shadow-glow: 0 0 40px hsl(209 100% 65% / 0.3);
+  }
 }
 
 @layer base {

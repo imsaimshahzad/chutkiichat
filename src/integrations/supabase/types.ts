@@ -46,6 +46,30 @@ export type Database = {
           },
         ]
       }
+      message_reads: {
+        Row: {
+          id: string
+          message_id: string
+          read_at: string
+          session_code: string
+          user_name: string
+        }
+        Insert: {
+          id?: string
+          message_id: string
+          read_at?: string
+          session_code: string
+          user_name: string
+        }
+        Update: {
+          id?: string
+          message_id?: string
+          read_at?: string
+          session_code?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string

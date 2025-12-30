@@ -46,19 +46,19 @@ const CreateSession = () => {
 
   return (
     <SessionCard delay={100}>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-          <Sparkles className="w-7 h-7 text-white" />
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shrink-0">
+          <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
         </div>
-        <div>
-          <h2 className="text-xl font-bold text-foreground">Create a New Chutkii</h2>
-          <p className="text-sm text-muted-foreground">Start your temporary chat room</p>
+        <div className="min-w-0">
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Create a New Chutkii</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">Start your temporary chat room</p>
         </div>
       </div>
 
       {!sessionCode ? (
         <Button 
-          className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-lg shadow-lg transition-all hover:scale-[1.02]"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
           onClick={handleCreate}
           disabled={isCreating}
         >
@@ -75,35 +75,35 @@ const CreateSession = () => {
           )}
         </Button>
       ) : (
-        <div className="space-y-4">
-          <div className="text-center bg-secondary/50 rounded-2xl p-4">
-            <p className="text-sm text-muted-foreground mb-2">Your Chutkii Code</p>
-            <div className="flex items-center justify-center gap-3">
-              <span className="font-mono text-4xl font-bold text-gradient-chutki tracking-[0.3em]">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="text-center bg-secondary/50 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Your Chutkii Code</p>
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
+              <span className="font-mono text-2xl sm:text-4xl font-bold text-gradient-chutki tracking-[0.2em] sm:tracking-[0.3em]">
                 {sessionCode}
               </span>
               <Button 
                 variant="ghost" 
                 size="icon"
                 onClick={handleCopy}
-                className="shrink-0 hover:bg-primary/10"
+                className="shrink-0 hover:bg-primary/10 h-8 w-8 sm:h-10 sm:w-10"
               >
                 {copied ? (
-                  <Check className="w-5 h-5 text-green-500" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
                 ) : (
-                  <Copy className="w-5 h-5 text-primary" />
+                  <Copy className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 )}
               </Button>
             </div>
           </div>
 
-          <div className="text-center py-3 bg-muted/50 rounded-xl">
-            <p className="text-xs text-muted-foreground mb-1">You'll chat as</p>
-            <p className="font-semibold text-primary">{userName}</p>
+          <div className="text-center py-2 sm:py-3 bg-muted/50 rounded-lg sm:rounded-xl">
+            <p className="text-xs text-muted-foreground mb-0.5 sm:mb-1">You'll chat as</p>
+            <p className="font-semibold text-primary text-sm sm:text-base">{userName}</p>
           </div>
 
           <Button 
-            className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-lg shadow-lg transition-all hover:scale-[1.02]"
+            className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
             onClick={handleJoinChat}
           >
             Enter Room

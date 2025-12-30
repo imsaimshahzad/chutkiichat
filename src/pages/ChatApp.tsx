@@ -497,7 +497,7 @@ const ChatApp = () => {
           </ScrollArea>
 
           {/* Message Input */}
-          <div className="p-3 sm:p-4 border-t border-border bg-card safe-area-inset-bottom">
+          <div className="p-3 sm:p-4 border-t border-border bg-card safe-area-inset-bottom flex-shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -510,6 +510,13 @@ const ChatApp = () => {
                 onChange={(e) => setMessageInput(e.target.value)}
                 placeholder="Type a message..."
                 className="flex-1 h-11 text-base"
+                autoComplete="off"
+                autoCorrect="off"
+                enterKeyHint="send"
+                onFocus={(e) => {
+                  // Prevent iOS keyboard from pushing content
+                  e.target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }}
               />
               <Button 
                 type="submit" 

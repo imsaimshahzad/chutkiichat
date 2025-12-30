@@ -227,8 +227,9 @@ const AdminPanel = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[500px]">
+          <CardContent className="p-0 sm:p-6">
+            {/* Desktop Table View */}
+            <ScrollArea className="h-[500px] hidden md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -349,7 +350,7 @@ const AdminPanel = () => {
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Delete User</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Are you sure you want to delete {u.display_name || u.username}? This action cannot be undone and will remove all their data.
+                                  Are you sure you want to delete {u.display_name || u.username}? This action cannot be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
@@ -369,6 +370,134 @@ const AdminPanel = () => {
                   ))}
                 </TableBody>
               </Table>
+            </ScrollArea>
+
+            {/* Mobile Card View */}
+            <ScrollArea className="h-[calc(100vh-400px)] md:hidden">
+              <div className="divide-y divide-border">
+                {filteredUsers.map((u) => (
+                  <div key={u.id} className={`p-4 ${u.is_blocked ? 'opacity-60' : ''}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative flex-shrink-0">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={u.avatar_url || ''} />
+                            <AvatarFallback>{u.display_name?.[0] || u.username[0]}</AvatarFallback>
+                          </Avatar>
+                          {u.is_online && (
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{u.display_name || u.username}</p>
+                          <p className="text-sm text-muted-foreground truncate">@{u.username}</p>
+                        </div>
+                      </div>
+                      {u.is_blocked ? (
+                        <Badge variant="destructive" className="gap-1 flex-shrink-0">
+                          <Ban className="h-3 w-3" />
+                          Blocked
+                        </Badge>
+                      ) : u.is_online ? (
+                        <Badge variant="default" className="gap-1 bg-green-500 flex-shrink-0">
+                          <CheckCircle className="h-3 w-3" />
+                          Online
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="gap-1 flex-shrink-0">
+                          Offline
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={u.role}
+                          onValueChange={(value: 'admin' | 'user') => handleRoleChange(u.id, value)}
+                          disabled={u.id === user?.id}
+                        >
+                          <SelectTrigger className="w-28 h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="user">
+                              <div className="flex items-center gap-2">
+                                <User className="h-3 w-3" />
+                                User
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="admin">
+                              <div className="flex items-center gap-2">
+                                <Crown className="h-3 w-3" />
+                                Admin
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <span className="text-xs text-muted-foreground">
+                          {format(new Date(u.created_at), 'MMM dd, yyyy')}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9"
+                          onClick={() => handleEditClick(u)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9"
+                          onClick={() => handleBlockToggle(u.id, u.is_blocked)}
+                          disabled={u.id === user?.id}
+                        >
+                          {u.is_blocked ? (
+                            <ShieldOff className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <Ban className="h-4 w-4 text-destructive" />
+                          )}
+                        </Button>
+                        
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-9 w-9"
+                              disabled={u.id === user?.id}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="max-w-[90vw] rounded-xl">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete User</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete {u.display_name || u.username}?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(u.id)}
+                                className="bg-destructive text-destructive-foreground"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </ScrollArea>
           </CardContent>
         </Card>

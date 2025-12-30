@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Room from "./pages/Room";
 import Auth from "./pages/Auth";
 import ChatApp from "./pages/ChatApp";
+import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/chat" element={<ChatApp />} />
+              <Route path="/admin" element={<AdminPanel />} />
               <Route path="/room/:id" element={<Room />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

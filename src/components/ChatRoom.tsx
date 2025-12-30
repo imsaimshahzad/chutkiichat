@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil, Users } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil, Users, Paperclip, X, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
+import { Message, formatTime, addMessage, getMessages, uploadFile } from "@/lib/chatUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
@@ -45,8 +45,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
   const [editingName, setEditingName] = useState(userName);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
   const { reactions, toggleReaction } = useMessageReactions(sessionCode, userName);
   const { onlineUsers, onlineCount } = useOnlineUsers(sessionCode, userName);
@@ -92,6 +95,9 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
             content: string;
             is_system: boolean;
             created_at: string;
+            file_url?: string;
+            file_type?: string;
+            file_name?: string;
           };
           
           setMessages(prev => {
@@ -107,7 +113,10 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
               content: newMsg.content,
               timestamp: new Date(newMsg.created_at),
               isOwn: newMsg.sender === userName,
-              isSystem: newMsg.is_system
+              isSystem: newMsg.is_system,
+              fileUrl: newMsg.file_url,
+              fileType: newMsg.file_type,
+              fileName: newMsg.file_name
             }];
           });
         }
@@ -129,7 +138,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   const MAX_MESSAGE_LENGTH = 5000;
 
   const handleSend = async () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !selectedFile) return;
 
     const content = newMessage.trim();
     
@@ -141,10 +150,76 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
     setNewMessage("");
     stopTyping();
     
-    const success = await addMessage(sessionCode, userName, content, false);
+    let fileData = null;
+    if (selectedFile) {
+      setIsUploading(true);
+      fileData = await uploadFile(sessionCode, selectedFile);
+      setIsUploading(false);
+      setSelectedFile(null);
+      
+      if (!fileData) {
+        toast.error("Failed to upload file");
+        return;
+      }
+    }
+    
+    const success = await addMessage(
+      sessionCode, 
+      userName, 
+      content || (fileData ? `Shared ${fileData.name}` : ""), 
+      false,
+      fileData?.url,
+      fileData?.type,
+      fileData?.name
+    );
     if (!success) {
       toast.error("Failed to send message");
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Max 10MB
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("File size must be less than 10MB");
+        return;
+      }
+      setSelectedFile(file);
+    }
+    // Reset input so same file can be selected again
+    e.target.value = '';
+  };
+
+  const isImageFile = (type?: string) => type?.startsWith('image/');
+
+  const renderFilePreview = (message: Message) => {
+    if (!message.fileUrl) return null;
+    
+    if (isImageFile(message.fileType)) {
+      return (
+        <a href={message.fileUrl} target="_blank" rel="noopener noreferrer" className="block mt-2">
+          <img 
+            src={message.fileUrl} 
+            alt={message.fileName || 'Shared image'} 
+            className="max-w-full max-h-48 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
+          />
+        </a>
+      );
+    }
+    
+    return (
+      <a 
+        href={message.fileUrl} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className={`flex items-center gap-2 mt-2 p-2 rounded-lg ${message.isOwn ? 'bg-white/20' : 'bg-muted'} hover:opacity-80 transition-opacity`}
+      >
+        <FileText className="w-4 h-4 shrink-0" />
+        <span className="text-xs truncate flex-1">{message.fileName || 'File'}</span>
+        <Download className="w-3 h-3 shrink-0" />
+      </a>
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -261,6 +336,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                   </p>
                 )}
                 <p className="break-words text-sm sm:text-base">{message.content}</p>
+                {renderFilePreview(message)}
                 {!message.isSystem && (
                   <p className={`text-[10px] sm:text-xs mt-0.5 sm:mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
                     {formatTime(message.timestamp)}
@@ -356,7 +432,47 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
             </DialogContent>
           </Dialog>
         </div>
+        {/* Selected file preview */}
+        {selectedFile && (
+          <div className="flex items-center gap-2 mb-2 p-2 bg-muted rounded-lg">
+            {selectedFile.type.startsWith('image/') ? (
+              <img 
+                src={URL.createObjectURL(selectedFile)} 
+                alt="Preview" 
+                className="w-10 h-10 object-cover rounded"
+              />
+            ) : (
+              <FileText className="w-10 h-10 p-2 bg-primary/10 rounded text-primary" />
+            )}
+            <span className="text-xs truncate flex-1">{selectedFile.name}</span>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-6 w-6"
+              onClick={() => setSelectedFile(null)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
+        
         <div className="flex gap-1.5 sm:gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            className="hidden"
+            accept="image/*,.pdf,.doc,.docx,.txt,.zip"
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl hover:bg-primary/10 shrink-0"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
+            <Paperclip className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+          </Button>
           <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -396,7 +512,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
           />
           <Button 
             onClick={handleSend}
-            disabled={!newMessage.trim()}
+            disabled={(!newMessage.trim() && !selectedFile) || isUploading}
             className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50 shrink-0 active:scale-95"
           >
             <Send className="w-4 h-4 sm:w-5 sm:h-5" />

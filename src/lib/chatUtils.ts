@@ -8,6 +8,9 @@ export interface Message {
   timestamp: Date;
   isOwn: boolean;
   isSystem?: boolean;
+  fileUrl?: string;
+  fileType?: string;
+  fileName?: string;
 }
 
 // Generate 4-digit numeric session code
@@ -85,9 +88,12 @@ export const addMessage = async (
   sessionCode: string, 
   sender: string, 
   content: string, 
-  isSystem: boolean = false
+  isSystem: boolean = false,
+  fileUrl?: string,
+  fileType?: string,
+  fileName?: string
 ): Promise<boolean> => {
-  console.log('Adding message:', { sessionCode, sender, content, isSystem });
+  console.log('Adding message:', { sessionCode, sender, content, isSystem, fileUrl, fileType, fileName });
   try {
     const { data, error } = await supabase
       .from('messages')
@@ -95,7 +101,10 @@ export const addMessage = async (
         session_code: sessionCode,
         sender,
         content,
-        is_system: isSystem
+        is_system: isSystem,
+        file_url: fileUrl || null,
+        file_type: fileType || null,
+        file_name: fileName || null
       })
       .select();
     
@@ -110,6 +119,36 @@ export const addMessage = async (
     console.error('Add message exception:', err);
     return false;
   }
+};
+
+// Upload file to storage
+export const uploadFile = async (
+  sessionCode: string,
+  file: File
+): Promise<{ url: string; type: string; name: string } | null> => {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${sessionCode}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+  
+  console.log('Uploading file:', { fileName, fileType: file.type, fileSize: file.size });
+  
+  const { data, error } = await supabase.storage
+    .from('chat-attachments')
+    .upload(fileName, file);
+  
+  if (error) {
+    console.error('Upload error:', error);
+    return null;
+  }
+  
+  const { data: urlData } = supabase.storage
+    .from('chat-attachments')
+    .getPublicUrl(data.path);
+  
+  return {
+    url: urlData.publicUrl,
+    type: file.type,
+    name: file.name
+  };
 };
 
 // Get messages for a session
@@ -128,6 +167,9 @@ export const getMessages = async (sessionCode: string): Promise<Message[]> => {
     content: msg.content,
     timestamp: new Date(msg.created_at),
     isOwn: false, // Will be set by component
-    isSystem: msg.is_system
+    isSystem: msg.is_system,
+    fileUrl: msg.file_url || undefined,
+    fileType: msg.file_type || undefined,
+    fileName: msg.file_name || undefined
   }));
 };

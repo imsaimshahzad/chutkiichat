@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import LandingHero from "@/components/LandingHero";
 import CreateSession from "@/components/CreateSession";
 import JoinSession from "@/components/JoinSession";
-import { MessageCircle, Shield, Clock, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MessageCircle, Shield, Clock, Zap, UserCheck } from "lucide-react";
 
 const Index = () => {
   return (
@@ -59,6 +61,20 @@ const Index = () => {
               <h3 className="font-semibold text-foreground text-sm sm:text-base mb-0.5 sm:mb-1">Real-time</h3>
               <p className="text-xs sm:text-sm text-muted-foreground">Instant messaging</p>
             </div>
+          </div>
+
+          {/* Full Chat CTA */}
+          <div className="bg-card rounded-2xl p-6 border border-border text-center mb-8 animate-fade-in" style={{ animationDelay: "700ms" }}>
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <UserCheck className="w-6 h-6 text-primary" />
+              <h3 className="font-bold text-lg text-foreground">Want Permanent Chats?</h3>
+            </div>
+            <p className="text-muted-foreground mb-4">Create an account to save contacts and keep your chat history forever!</p>
+            <Link to="/auth">
+              <Button className="chutki-button">
+                Sign Up for Full Chat
+              </Button>
+            </Link>
           </div>
 
           {/* Footer */}

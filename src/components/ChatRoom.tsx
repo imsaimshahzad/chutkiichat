@@ -290,32 +290,32 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] liquid-bg">
+    <div className="flex flex-col h-[100dvh] min-h-[100dvh] liquid-bg overflow-hidden">
       {/* Header */}
-      <header className="liquid-glass px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shrink-0 rounded-none">
+      <header className="liquid-glass px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 flex items-center justify-between animate-slide-up shrink-0 rounded-none safe-area-inset-top">
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={onLeave}
-          className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10"
+          className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10 min-touch-none"
         >
           <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-md shadow-primary/30">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-md shadow-primary/30">
             <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>
           <div className="text-center">
             <p className="text-[10px] sm:text-xs text-muted-foreground">Chutkii Room</p>
             <div className="flex items-center gap-1 sm:gap-2">
-              <span className="font-mono font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
+              <span className="font-mono font-bold text-gradient-chutki tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.2em] text-base sm:text-lg">
                 {sessionCode}
               </span>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-6 w-6 sm:h-7 sm:w-7 hover:bg-primary/10"
+                className="h-6 w-6 sm:h-7 sm:w-7 hover:bg-primary/10 min-touch-none"
                 onClick={handleCopyCode}
               >
                 {copied ? (
@@ -331,8 +331,8 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 cursor-pointer">
-                <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+              <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-2.5 md:px-3 py-1 sm:py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 cursor-pointer">
+                <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                 <span className="text-xs sm:text-sm font-medium">{onlineCount}</span>
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse" />
               </div>
@@ -352,14 +352,14 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 overscroll-contain">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-5 space-y-2 sm:space-y-3 scroll-smooth-container">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground px-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
-              <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
+              <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary" />
             </div>
-            <p className="font-medium text-sm sm:text-base">No messages yet</p>
-            <p className="text-xs sm:text-sm">Start the conversation!</p>
+            <p className="font-medium text-responsive-base">No messages yet</p>
+            <p className="text-responsive-sm">Start the conversation!</p>
           </div>
         )}
         
@@ -368,11 +368,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
             key={message.id}
             className={`flex ${message.isOwn ? "justify-end" : "justify-start"} animate-fade-in group`}
           >
-            <div className="max-w-[85%] sm:max-w-[80%]">
+            <div className="max-w-[88%] sm:max-w-[85%] md:max-w-[80%] lg:max-w-[70%]">
               <div
-                className={`rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-3 ${
+                className={`rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 ${
                   message.isSystem
-                    ? "bg-muted text-muted-foreground text-center text-xs sm:text-sm mx-auto rounded-lg sm:rounded-xl"
+                    ? "bg-muted text-muted-foreground text-center text-responsive-xs mx-auto rounded-lg sm:rounded-xl"
                     : message.isOwn
                     ? "bg-gradient-to-br from-primary to-accent text-white rounded-br-sm sm:rounded-br-md shadow-md"
                     : "bg-card border border-border rounded-bl-sm sm:rounded-bl-md shadow-sm"
@@ -383,7 +383,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                     {message.sender}
                   </p>
                 )}
-                <p className="break-words text-sm sm:text-base">{message.content}</p>
+                <p className="break-words text-responsive-base">{message.content}</p>
                 {renderFilePreview(message)}
                 {!message.isSystem && (
                   <div className={`flex items-center gap-1 mt-0.5 sm:mt-1 ${message.isOwn ? "justify-end" : ""}`}>
@@ -418,14 +418,14 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
         {/* Typing Indicator */}
         {typingText && (
           <div className="flex justify-start animate-fade-in">
-            <div className="bg-card border border-border rounded-xl sm:rounded-2xl rounded-bl-sm sm:rounded-bl-md px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
+            <div className="bg-card border border-border rounded-xl sm:rounded-2xl rounded-bl-sm sm:rounded-bl-md px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
-                <span className="text-xs sm:text-sm text-muted-foreground">{typingText}</span>
+                <span className="text-responsive-sm text-muted-foreground">{typingText}</span>
               </div>
             </div>
           </div>
@@ -435,20 +435,20 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </div>
 
       {/* Input */}
-      <div className="p-3 sm:p-4 liquid-glass shrink-0 safe-area-inset-bottom rounded-none">
-        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+      <div className="p-2.5 sm:p-3 md:p-4 liquid-glass shrink-0 safe-area-inset-bottom rounded-none">
+        <div className="flex items-center gap-2 mb-2 sm:mb-2.5 md:mb-3">
           <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
           <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
             <DialogTrigger asChild>
               <button 
-                className="flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer"
+                className="flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer min-touch-none"
                 onClick={() => setEditingName(userName)}
               >
-                <span className="truncate max-w-[100px] sm:max-w-[150px]">{userName}</span>
+                <span className="truncate max-w-[80px] sm:max-w-[100px] md:max-w-[150px]">{userName}</span>
                 <Pencil className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
               </button>
             </DialogTrigger>
-            <DialogContent className="max-w-[90vw] sm:max-w-sm">
+            <DialogContent className="max-w-[calc(100vw-32px)] sm:max-w-sm mx-auto">
               <DialogHeader>
                 <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
                 <DialogDescription>
@@ -461,18 +461,18 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                   onChange={(e) => setEditingName(e.target.value)}
                   placeholder="Enter new name..."
                   maxLength={50}
-                  className="h-11"
+                  className="h-11 sm:h-12"
                 />
                 <div className="flex gap-2">
                   <Button 
                     variant="outline" 
-                    className="flex-1"
+                    className="flex-1 h-10 sm:h-11"
                     onClick={() => setNameDialogOpen(false)}
                   >
                     Cancel
                   </Button>
                   <Button 
-                    className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
+                    className="flex-1 h-10 sm:h-11 bg-gradient-to-r from-primary to-accent text-white"
                     onClick={() => {
                       if (editingName.trim() && editingName.trim() !== userName) {
                         onNameChange?.(editingName.trim());
@@ -498,16 +498,16 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
               <img 
                 src={URL.createObjectURL(selectedFile)} 
                 alt="Preview" 
-                className="w-10 h-10 object-cover rounded"
+                className="w-9 h-9 sm:w-10 sm:h-10 object-cover rounded"
               />
             ) : (
-              <FileText className="w-10 h-10 p-2 bg-primary/10 rounded text-primary" />
+              <FileText className="w-9 h-9 sm:w-10 sm:h-10 p-2 bg-primary/10 rounded text-primary" />
             )}
-            <span className="text-xs truncate flex-1">{selectedFile.name}</span>
+            <span className="text-responsive-xs truncate flex-1">{selectedFile.name}</span>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-6 w-6"
+              className="h-7 w-7 sm:h-8 sm:w-8 min-touch-none"
               onClick={() => setSelectedFile(null)}
             >
               <X className="w-4 h-4" />
@@ -526,7 +526,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
           <Button
             variant="ghost"
             size="icon"
-            className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl hover:bg-primary/10 shrink-0"
+            className="h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 rounded-lg sm:rounded-xl hover:bg-primary/10 shrink-0 min-touch-none"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
           >
@@ -537,7 +537,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl hover:bg-primary/10 shrink-0"
+                className="h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 rounded-lg sm:rounded-xl hover:bg-primary/10 shrink-0 min-touch-none"
               >
                 <Smile className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
               </Button>
@@ -551,7 +551,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                 onEmojiClick={handleEmojiClick}
                 theme={theme === "dark" ? Theme.DARK : Theme.LIGHT}
                 width={280}
-                height={350}
+                height={320}
               />
             </PopoverContent>
           </Popover>
@@ -567,12 +567,12 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
             }}
             onKeyDown={handleKeyDown}
             maxLength={5000}
-            className="flex-1 h-10 sm:h-12 rounded-lg sm:rounded-xl border-border focus:border-primary text-sm sm:text-base"
+            className="flex-1 h-10 sm:h-11 md:h-12 rounded-lg sm:rounded-xl border-border focus:border-primary text-responsive-base"
           />
           <Button 
             onClick={handleSend}
             disabled={(!newMessage.trim() && !selectedFile) || isUploading}
-            className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50 shrink-0 active:scale-95"
+            className="h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50 shrink-0 active:scale-95 min-touch-none"
           >
             <Send className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>

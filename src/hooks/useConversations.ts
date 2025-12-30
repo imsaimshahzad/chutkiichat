@@ -157,7 +157,7 @@ export const useConversations = () => {
     if (!user) return null;
 
     try {
-      // Check if conversation already exists
+      // Check if conversation already exists between these two users
       const { data: existingParts } = await supabase
         .from('conversation_participants')
         .select('conversation_id')
@@ -180,33 +180,45 @@ export const useConversations = () => {
             .maybeSingle();
 
           if (conv && !conv.is_group) {
+            // Existing conversation found - refresh and return
+            await fetchConversations();
             return part.conversation_id;
           }
         }
       }
 
-      // Create new conversation
-      const { data: newConv, error: convError } = await supabase
+      // Create new conversation - use raw insert without .select() to avoid RLS timing issues
+      const newConvId = crypto.randomUUID();
+      
+      const { error: convError } = await supabase
         .from('conversations')
         .insert({
+          id: newConvId,
           is_group: false,
           created_by: user.id,
-        })
-        .select()
-        .single();
+        });
 
-      if (convError) throw convError;
+      if (convError) {
+        console.error('Error creating conversation:', convError);
+        throw convError;
+      }
 
-      // Add participants
-      await supabase
+      // Add participants immediately
+      const { error: partError } = await supabase
         .from('conversation_participants')
         .insert([
-          { conversation_id: newConv.id, user_id: user.id },
-          { conversation_id: newConv.id, user_id: participantId },
+          { conversation_id: newConvId, user_id: user.id },
+          { conversation_id: newConvId, user_id: participantId },
         ]);
 
-      fetchConversations();
-      return newConv.id;
+      if (partError) {
+        console.error('Error adding participants:', partError);
+        throw partError;
+      }
+
+      // Refresh conversations list
+      await fetchConversations();
+      return newConvId;
     } catch (error) {
       console.error('Error creating conversation:', error);
       return null;

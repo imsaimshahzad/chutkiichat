@@ -36,7 +36,7 @@ import { useNavigate } from 'react-router-dom';
 const ChatApp = () => {
   const navigate = useNavigate();
   const { user, profile, signOut, isAdmin } = useAuth();
-  const { conversations, loading: convsLoading, createConversation } = useConversations();
+  const { conversations, loading: convsLoading, createConversation, refreshConversations } = useConversations();
   const { contacts, searchUsers, addContact } = useContacts();
   const { users: allUsers, loading: usersLoading } = useAllUsers();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
@@ -63,6 +63,16 @@ const ChatApp = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Sync selected conversation with updated conversations list
+  useEffect(() => {
+    if (selectedConversation && conversations.length > 0) {
+      const updatedConv = conversations.find(c => c.id === selectedConversation.id);
+      if (updatedConv && JSON.stringify(updatedConv) !== JSON.stringify(selectedConversation)) {
+        setSelectedConversation(updatedConv);
+      }
+    }
+  }, [conversations, selectedConversation]);
+
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.trim().length < 2) {
@@ -78,12 +88,33 @@ const ChatApp = () => {
   const handleStartChat = async (userId: string) => {
     const conversationId = await createConversation(userId);
     if (conversationId) {
-      const conv = conversations.find(c => c.id === conversationId);
-      if (conv) {
-        setSelectedConversation(conv);
-      }
+      // Wait a moment for the conversations to refresh, then select the new one
       setIsNewChatOpen(false);
       setShowMobileChat(true);
+      
+      // Set a temporary conversation object while waiting for full refresh
+      const otherUser = allUsers.find(u => u.id === userId);
+      if (otherUser) {
+        setSelectedConversation({
+          id: conversationId,
+          is_group: false,
+          group_name: null,
+          group_avatar: null,
+          participants: [{
+            id: otherUser.id,
+            username: otherUser.username,
+            display_name: otherUser.display_name,
+            avatar_url: otherUser.avatar_url,
+            is_online: otherUser.is_online || false,
+            last_seen: new Date().toISOString(),
+          }],
+          last_message: null,
+          unread_count: 0,
+          updated_at: new Date().toISOString(),
+        });
+      }
+    } else {
+      toast.error('Failed to start conversation');
     }
   };
 

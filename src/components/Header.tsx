@@ -160,15 +160,38 @@ const Header = () => {
                   <p className="mb-4">
                     Found something that's not working right? Let us know!
                   </p>
-                  <div className="bg-secondary/50 rounded-xl p-4 space-y-2">
+                  <div className="bg-secondary/50 rounded-xl p-4 space-y-3">
                     <p className="text-sm text-muted-foreground">Please include:</p>
                     <ul className="text-sm space-y-1 list-disc list-inside">
                       <li>What you were trying to do</li>
                       <li>What went wrong</li>
                       <li>Your device and browser</li>
                     </ul>
-                    <p className="text-sm text-muted-foreground mt-3">Send reports to:</p>
-                    <p className="font-medium text-primary">bugs@chutkichat.com</p>
+                    <div className="border-t border-border pt-3 mt-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📩</span>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Email:</p>
+                          <a href="mailto:imshahzad2244@gmail.com" className="font-medium text-primary hover:underline">
+                            imshahzad2244@gmail.com
+                          </a>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📱</span>
+                        <div>
+                          <p className="text-sm text-muted-foreground">WhatsApp:</p>
+                          <a 
+                            href="https://wa.me/923478018040" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="font-medium text-primary hover:underline"
+                          >
+                            0347 8018040
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </DialogDescription>
               </DialogHeader>

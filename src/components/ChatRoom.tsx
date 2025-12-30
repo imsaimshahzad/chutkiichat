@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
@@ -7,8 +7,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { useMessageReactions } from "@/hooks/useMessageReactions";
+import { useOnlineUsers } from "@/hooks/useOnlineUsers";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { useTheme } from "next-themes";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Popover,
   PopoverContent,
@@ -42,6 +49,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   const inputRef = useRef<HTMLInputElement>(null);
   const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
   const { reactions, toggleReaction } = useMessageReactions(sessionCode, userName);
+  const { onlineUsers, onlineCount } = useOnlineUsers(sessionCode, userName);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -197,10 +205,27 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
           </div>
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-green-100 text-green-700">
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-xs sm:text-sm font-medium">Live</span>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 cursor-pointer">
+                <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="text-xs sm:text-sm font-medium">{onlineCount}</span>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-[200px]">
+              <p className="font-semibold text-xs mb-1">Online Users</p>
+              <div className="space-y-0.5">
+                {onlineUsers.map((user, idx) => (
+                  <p key={idx} className="text-xs text-muted-foreground">
+                    {user.name === userName ? `${user.name} (You)` : user.name}
+                  </p>
+                ))}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </header>
 
       {/* Messages */}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
@@ -14,19 +14,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import MessageReactionsComponent from "./MessageReactions";
 
 interface ChatRoomProps {
   sessionCode: string;
   userName: string;
   onLeave: () => void;
+  onNameChange?: (newName: string) => void;
 }
 
-const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
+const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [copied, setCopied] = useState(false);
   const [emojiOpen, setEmojiOpen] = useState(false);
+  const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [editingName, setEditingName] = useState(userName);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
@@ -267,7 +278,58 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
       <div className="p-3 sm:p-4 bg-card border-t border-border shrink-0 safe-area-inset-bottom">
         <div className="flex items-center gap-2 mb-2 sm:mb-3">
           <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
-          <span className="text-[10px] sm:text-xs font-semibold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 rounded-full truncate max-w-[120px] sm:max-w-none">{userName}</span>
+          <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
+            <DialogTrigger asChild>
+              <button 
+                className="flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 rounded-full hover:bg-primary/20 transition-colors cursor-pointer"
+                onClick={() => setEditingName(userName)}
+              >
+                <span className="truncate max-w-[100px] sm:max-w-[150px]">{userName}</span>
+                <Pencil className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-[90vw] sm:max-w-sm">
+              <DialogHeader>
+                <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
+                <DialogDescription>
+                  Enter a new display name for this chat session.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 pt-2">
+                <Input
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  placeholder="Enter new name..."
+                  maxLength={50}
+                  className="h-11"
+                />
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => setNameDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
+                    onClick={() => {
+                      if (editingName.trim() && editingName.trim() !== userName) {
+                        onNameChange?.(editingName.trim());
+                        setNameDialogOpen(false);
+                      } else if (editingName.trim() === userName) {
+                        setNameDialogOpen(false);
+                      } else {
+                        toast.error("Please enter a valid name");
+                      }
+                    }}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="flex gap-1.5 sm:gap-2">
           <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>

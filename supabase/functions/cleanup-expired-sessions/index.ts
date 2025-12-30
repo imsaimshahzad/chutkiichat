@@ -13,6 +13,21 @@ serve(async (req) => {
   }
 
   try {
+    // Validate API key - require the anon key to prevent unauthorized access
+    const apikey = req.headers.get('apikey');
+    const expectedKey = Deno.env.get('SUPABASE_ANON_KEY');
+    
+    if (!apikey || apikey !== expectedKey) {
+      console.error('Unauthorized access attempt - invalid or missing API key');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    
     console.log('Starting expired sessions cleanup...');
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

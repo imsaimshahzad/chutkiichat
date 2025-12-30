@@ -405,18 +405,18 @@ const ChatApp = () => {
 
   // Sidebar content
   const SidebarContent = () => (
-    <div className="flex flex-col h-full overflow-hidden bg-card">
-      {/* WhatsApp-style Header */}
-      <div className="wa-header px-4 py-3 flex items-center justify-between flex-shrink-0">
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Header with liquid glass */}
+      <div className="liquid-glass px-4 py-3 flex items-center justify-between flex-shrink-0 rounded-none">
         <div className="flex items-center gap-3 min-w-0">
-          <Avatar className="h-10 w-10 flex-shrink-0 border-2 border-white/20">
+          <Avatar className="h-10 w-10 flex-shrink-0 border-2 border-primary/20">
             <AvatarImage src={profile?.avatar_url || ''} />
-            <AvatarFallback className="bg-white/20 text-white">
+            <AvatarFallback className="bg-primary/20 text-primary">
               {profile?.display_name?.[0] || profile?.username?.[0] || 'U'}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 hidden sm:block">
-            <p className="font-medium text-white truncate text-sm">{profile?.display_name || profile?.username}</p>
+            <p className="font-medium text-foreground truncate text-sm">{profile?.display_name || profile?.username}</p>
           </div>
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
@@ -426,14 +426,14 @@ const ChatApp = () => {
               size="icon" 
               onClick={() => navigate('/admin')} 
               title="Admin Panel"
-              className="h-10 w-10 text-white hover:bg-white/10"
+              className="h-10 w-10 text-primary hover:bg-primary/10"
             >
               <Shield className="h-5 w-5" />
             </Button>
           )}
           <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10">
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-primary hover:bg-primary/10">
                 <MessageCircle className="h-5 w-5" />
               </Button>
             </DialogTrigger>
@@ -654,16 +654,16 @@ const ChatApp = () => {
 
   // Chat area content
   const ChatArea = () => (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden liquid-bg">
       {selectedConversation ? (
         <>
-          {/* WhatsApp-style Chat Header */}
-          <div className="wa-header px-2 sm:px-4 py-2 flex items-center justify-between flex-shrink-0">
+          {/* Chat Header with liquid glass */}
+          <div className="liquid-glass px-2 sm:px-4 py-2 flex items-center justify-between flex-shrink-0 rounded-none">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden h-10 w-10 text-white hover:bg-white/10"
+                className="md:hidden h-10 w-10 text-foreground hover:bg-primary/10"
                 onClick={() => setShowMobileChat(false)}
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -671,29 +671,29 @@ const ChatApp = () => {
               <div className="relative flex-shrink-0">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={getConversationAvatar(selectedConversation) || ''} />
-                  <AvatarFallback className="bg-white/20 text-white">{getConversationName(selectedConversation)[0]}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/20 text-primary">{getConversationName(selectedConversation)[0]}</AvatarFallback>
                 </Avatar>
                 {isParticipantOnline(selectedConversation) && (
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[hsl(var(--wa-online))] rounded-full border-2 border-[hsl(var(--wa-header))]" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[hsl(var(--wa-online))] rounded-full border-2 border-background" />
                 )}
               </div>
               <div className="min-w-0">
-                <p className="font-medium text-white truncate text-[15px]">{getConversationName(selectedConversation)}</p>
-                <p className="text-xs text-white/70">
+                <p className="font-medium text-foreground truncate text-[15px]">{getConversationName(selectedConversation)}</p>
+                <p className="text-xs text-muted-foreground">
                   {isParticipantOnline(selectedConversation) ? 'online' : 'offline'}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-1 flex-shrink-0">
-              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10 hidden sm:flex">
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-foreground hover:bg-primary/10 hidden sm:flex">
                 <Video className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10 hidden sm:flex">
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-foreground hover:bg-primary/10 hidden sm:flex">
                 <Phone className="h-5 w-5" />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10">
+                  <Button variant="ghost" size="icon" className="h-10 w-10 text-foreground hover:bg-primary/10">
                     <MoreVertical className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -784,8 +784,8 @@ const ChatApp = () => {
             </div>
           )}
 
-          {/* WhatsApp-style Message Input */}
-          <div className="wa-input-area px-2 py-2 safe-area-inset-bottom flex-shrink-0">
+          {/* Message Input with liquid glass */}
+          <div className="liquid-glass px-2 py-2 safe-area-inset-bottom flex-shrink-0 rounded-none">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -816,10 +816,10 @@ const ChatApp = () => {
           </div>
         </>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center wa-chat-bg">
-          <div className="bg-card/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-md">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-              <MessageCircle className="h-10 w-10 text-primary" />
+        <div className="flex-1 flex flex-col items-center justify-center p-6 liquid-bg">
+          <div className="liquid-glass-card rounded-2xl p-8 shadow-lg max-w-md text-center">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-6 mx-auto shadow-lg shadow-primary/30">
+              <MessageCircle className="h-10 w-10 text-primary-foreground" />
             </div>
             <h2 className="text-xl font-semibold text-foreground mb-2">ChutkiiChat</h2>
             <p className="text-muted-foreground text-sm">
@@ -835,9 +835,9 @@ const ChatApp = () => {
 
   return (
     <>
-      <div className="app-viewport flex bg-background overflow-hidden">
+      <div className="app-viewport flex liquid-bg overflow-hidden">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex w-[30%] min-w-[300px] max-w-[400px] flex-col bg-card wa-sidebar flex-shrink-0">
+        <div className="hidden md:flex w-[30%] min-w-[300px] max-w-[400px] flex-col liquid-glass wa-sidebar flex-shrink-0 rounded-none">
           {SidebarContent()}
         </div>
 

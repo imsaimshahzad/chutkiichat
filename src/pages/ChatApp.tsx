@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useConversations, Conversation } from '@/hooks/useConversations';
 import { useChatMessages, ChatMessage } from '@/hooks/useChatMessages';
 import { useContacts } from '@/hooks/useContacts';
+import { useAllUsers } from '@/hooks/useAllUsers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,6 +37,7 @@ const ChatApp = () => {
   const { user, profile, signOut, isAdmin } = useAuth();
   const { conversations, loading: convsLoading, createConversation } = useConversations();
   const { contacts, searchUsers, addContact } = useContacts();
+  const { users: allUsers, loading: usersLoading } = useAllUsers();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const { messages, loading: msgsLoading, sendMessage } = useChatMessages(selectedConversation?.id || null);
   
@@ -183,66 +185,85 @@ const ChatApp = () => {
                   />
                 </div>
                 <ScrollArea className="h-[300px]">
-                  {isSearching ? (
+                  {isSearching || usersLoading ? (
                     <div className="flex justify-center py-4">
                       <Loader2 className="h-6 w-6 animate-spin text-primary" />
                     </div>
-                  ) : searchResults.length > 0 ? (
-                    <div className="space-y-2">
-                      {searchResults.map((user) => (
-                        <div
-                          key={user.id}
-                          className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
-                        >
-                          <div className="flex items-center gap-3" onClick={() => handleStartChat(user.id)}>
-                            <Avatar>
-                              <AvatarImage src={user.avatar_url || ''} />
-                              <AvatarFallback>{user.display_name?.[0] || user.username[0]}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{user.display_name || user.username}</p>
-                              <p className="text-sm text-muted-foreground">@{user.username}</p>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAddContact(user.id);
-                            }}
+                  ) : searchQuery.trim().length >= 2 ? (
+                    // Show search results
+                    searchResults.length > 0 ? (
+                      <div className="space-y-2">
+                        {searchResults.map((user) => (
+                          <div
+                            key={user.id}
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
                           >
-                            <UserPlus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : searchQuery.length >= 2 ? (
-                    <p className="text-center text-muted-foreground py-4">No users found</p>
+                            <div className="flex items-center gap-3" onClick={() => handleStartChat(user.id)}>
+                              <Avatar>
+                                <AvatarImage src={user.avatar_url || ''} />
+                                <AvatarFallback>{user.display_name?.[0] || user.username[0]}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-medium">{user.display_name || user.username}</p>
+                                <p className="text-sm text-muted-foreground">@{user.username}</p>
+                              </div>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddContact(user.id);
+                              }}
+                            >
+                              <UserPlus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-center text-muted-foreground py-4">No users found</p>
+                    )
                   ) : (
+                    // Show all users by default
                     <div className="space-y-2">
-                      <p className="text-sm text-muted-foreground mb-2">Your Contacts</p>
-                      {contacts.map((contact) => (
-                        <div
-                          key={contact.id}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted cursor-pointer"
-                          onClick={() => handleStartChat(contact.contact_id)}
-                        >
-                          <div className="relative">
-                            <Avatar>
-                              <AvatarImage src={contact.profile.avatar_url || ''} />
-                              <AvatarFallback>{contact.profile.display_name?.[0] || contact.profile.username[0]}</AvatarFallback>
-                            </Avatar>
-                            {contact.profile.is_online && (
-                              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
-                            )}
+                      <p className="text-sm text-muted-foreground mb-2">All Users</p>
+                      {allUsers.length === 0 ? (
+                        <p className="text-center text-muted-foreground py-4">No users available</p>
+                      ) : (
+                        allUsers.map((u) => (
+                          <div
+                            key={u.id}
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
+                          >
+                            <div className="flex items-center gap-3 flex-1" onClick={() => handleStartChat(u.id)}>
+                              <div className="relative">
+                                <Avatar>
+                                  <AvatarImage src={u.avatar_url || ''} />
+                                  <AvatarFallback>{u.display_name?.[0] || u.username[0]}</AvatarFallback>
+                                </Avatar>
+                                {u.is_online && (
+                                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+                                )}
+                              </div>
+                              <div>
+                                <p className="font-medium">{u.display_name || u.username}</p>
+                                <p className="text-sm text-muted-foreground">@{u.username}</p>
+                              </div>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddContact(u.id);
+                              }}
+                            >
+                              <UserPlus className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <div>
-                            <p className="font-medium">{contact.nickname || contact.profile.display_name || contact.profile.username}</p>
-                            <p className="text-sm text-muted-foreground">{contact.profile.status}</p>
-                          </div>
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   )}
                 </ScrollArea>

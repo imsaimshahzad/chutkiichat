@@ -41,11 +41,14 @@
     /* Visual viewport height */
     --app-height: 100vh;
 
-    /* Liquid Glass tokens - Light */
-    --glass-bg: 0 0% 100% / 0.7;
-    --glass-border: 0 0% 100% / 0.5;
-    --glass-shine: 0 0% 100% / 0.8;
-    --glass-blur: 20px;
+    /* Apple-style Liquid Glass tokens - Light */
+    --glass-bg: 255 255 255 / 0.72;
+    --glass-bg-elevated: 255 255 255 / 0.85;
+    --glass-border: 255 255 255 / 0.18;
+    --glass-border-light: 0 0 0 / 0.04;
+    --glass-shine: 255 255 255 / 0.5;
+    --glass-blur: 40px;
+    --glass-saturate: 180%;
 
     /* Chat specific tokens - Light (Blue theme) */
     --wa-header: 217 91% 55%;
@@ -56,10 +59,13 @@
     --wa-online: 142 71% 45%;
     --wa-read: 217 91% 60%;
     
-    /* Shadows */
-    --shadow-soft: 0 1px 3px hsl(217 91% 60% / 0.1);
-    --shadow-card: 0 2px 8px hsl(222 47% 11% / 0.08);
-    --shadow-glass: 0 8px 32px hsl(217 91% 60% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.5);
+    /* Shadows - Apple style */
+    --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-glass: 
+      0 0.5px 0 rgba(255, 255, 255, 0.5) inset,
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 8px 24px rgba(0, 0, 0, 0.08);
   }
 
   .dark {
@@ -93,11 +99,14 @@
     --input: 0 0% 15%;
     --ring: 0 84% 60%;
 
-    /* Liquid Glass tokens - Dark */
-    --glass-bg: 0 0% 10% / 0.6;
-    --glass-border: 0 0% 100% / 0.1;
-    --glass-shine: 0 0% 100% / 0.05;
-    --glass-blur: 24px;
+    /* Apple-style Liquid Glass tokens - Dark */
+    --glass-bg: 38 38 38 / 0.65;
+    --glass-bg-elevated: 48 48 48 / 0.75;
+    --glass-border: 255 255 255 / 0.08;
+    --glass-border-light: 255 255 255 / 0.04;
+    --glass-shine: 255 255 255 / 0.06;
+    --glass-blur: 50px;
+    --glass-saturate: 200%;
 
     /* Chat specific tokens - Dark (Red theme) */
     --wa-header: 0 0% 10%;
@@ -108,10 +117,13 @@
     --wa-online: 142 71% 45%;
     --wa-read: 0 84% 60%;
     
-    /* Shadows for dark mode */
-    --shadow-soft: 0 1px 3px hsl(0 0% 0% / 0.5);
-    --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.6);
-    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(0 0% 100% / 0.05);
+    /* Shadows for dark mode - Apple style */
+    --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-glass: 
+      0 0.5px 0 rgba(255, 255, 255, 0.06) inset,
+      0 1px 3px rgba(0, 0, 0, 0.2),
+      0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -157,91 +169,59 @@
 }
 
 @layer components {
-  /* Liquid Glass Effect */
+  /* Apple-style Liquid Glass Effect */
   .liquid-glass {
-    background: hsl(var(--glass-bg));
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid hsl(var(--glass-border));
+    background: rgba(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 0.5px solid rgba(var(--glass-border));
+    border-top: 0.5px solid rgba(var(--glass-shine));
+    box-shadow: var(--shadow-glass);
+    position: relative;
+  }
+
+  /* Apple-style Liquid Glass Card */
+  .liquid-glass-card {
+    background: rgba(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 0.5px solid rgba(var(--glass-border));
     box-shadow: var(--shadow-glass);
     position: relative;
     overflow: hidden;
   }
 
-  .liquid-glass::before {
+  /* Subtle top highlight like iOS */
+  .liquid-glass-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 50%;
-    background: linear-gradient(
-      180deg,
-      hsl(var(--glass-shine)) 0%,
-      transparent 100%
-    );
-    pointer-events: none;
-    border-radius: inherit;
-  }
-
-  /* Liquid Glass Card variant */
-  .liquid-glass-card {
-    background: hsl(var(--glass-bg));
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid hsl(var(--glass-border));
-    box-shadow: var(--shadow-glass);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .liquid-glass-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 200%;
-    height: 100%;
+    height: 1px;
     background: linear-gradient(
       90deg,
       transparent 0%,
-      hsl(var(--glass-shine)) 50%,
+      rgba(var(--glass-shine)) 20%,
+      rgba(var(--glass-shine)) 80%,
       transparent 100%
     );
-    transform: translateX(-100%) rotate(15deg);
     pointer-events: none;
   }
 
-  .liquid-glass-card:hover::before {
-    animation: glass-shine 1.5s ease-in-out;
+  /* Apple-style elevated glass */
+  .liquid-glass-elevated {
+    background: rgba(var(--glass-bg-elevated));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 0.5px solid rgba(var(--glass-border));
+    box-shadow: 
+      0 0.5px 0 rgba(255, 255, 255, 0.4) inset,
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      0 12px 32px rgba(0, 0, 0, 0.12);
   }
 
-  /* Liquid Glass Button */
-  .liquid-glass-button {
-    background: hsl(var(--glass-bg));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid hsl(var(--glass-border));
-    box-shadow: 0 4px 16px hsl(var(--primary) / 0.2), inset 0 1px 0 hsl(0 0% 100% / 0.3);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .liquid-glass-button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      hsl(0 0% 100% / 0.2) 0%,
-      transparent 50%,
-      hsl(0 0% 0% / 0.1) 100%
-    );
-    pointer-events: none;
-    border-radius: inherit;
-  }
-
-  /* Animated liquid blob background */
+  /* Subtle ambient background with soft blobs */
   .liquid-bg {
     position: relative;
     overflow: hidden;
@@ -252,26 +232,27 @@
     content: '';
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
-    animation: liquid-float 8s ease-in-out infinite;
+    filter: blur(100px);
+    opacity: 0.4;
+    animation: liquid-float 20s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .liquid-bg::before {
-    width: 300px;
-    height: 300px;
-    background: hsl(var(--primary) / 0.3);
-    top: -100px;
-    left: -100px;
+    width: 500px;
+    height: 500px;
+    background: hsl(var(--primary) / 0.25);
+    top: -200px;
+    left: -150px;
   }
 
   .liquid-bg::after {
-    width: 400px;
-    height: 400px;
-    background: hsl(var(--accent) / 0.2);
-    bottom: -150px;
-    right: -150px;
-    animation-delay: -4s;
+    width: 600px;
+    height: 600px;
+    background: hsl(var(--primary) / 0.15);
+    bottom: -250px;
+    right: -200px;
+    animation-delay: -10s;
     animation-direction: reverse;
   }
 
@@ -414,15 +395,15 @@
 @keyframes liquid-float {
   0%, 100% { 
     transform: translate(0, 0) scale(1);
+    opacity: 0.4;
   }
-  25% {
-    transform: translate(30px, -30px) scale(1.1);
+  33% {
+    transform: translate(20px, -20px) scale(1.05);
+    opacity: 0.35;
   }
-  50% { 
-    transform: translate(0, -50px) scale(1);
-  }
-  75% {
-    transform: translate(-30px, -30px) scale(0.9);
+  66% { 
+    transform: translate(-15px, 15px) scale(0.98);
+    opacity: 0.45;
   }
 }
 

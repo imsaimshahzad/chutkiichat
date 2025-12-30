@@ -1,19 +1,36 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, ArrowRight, Delete } from "lucide-react";
+import { Users, ArrowRight, Delete, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
 import { generateAnonymousName, sessionExists } from "@/lib/chatUtils";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const JoinSession = () => {
   const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userName, setUserName] = useState(generateAnonymousName());
+  const [editingName, setEditingName] = useState(userName);
+  const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [showNameSection, setShowNameSection] = useState(false);
 
   const handleNumberPress = (num: string) => {
     if (code.length < 4) {
-      setCode((prev) => prev + num);
+      const newCode = code + num;
+      setCode(newCode);
+      if (newCode.length === 4) {
+        setShowNameSection(true);
+      }
     }
   };
 
@@ -39,11 +56,20 @@ const JoinSession = () => {
       return;
     }
 
-    const userName = generateAnonymousName();
     sessionStorage.setItem(`room-${trimmedCode}-user`, userName);
     
     toast.success(`Joining as ${userName}`);
     navigate(`/room/${trimmedCode}`);
+  };
+
+  const handleNameSave = () => {
+    if (editingName.trim()) {
+      setUserName(editingName.trim());
+      setNameDialogOpen(false);
+      toast.success("Name updated!");
+    } else {
+      toast.error("Please enter a valid name");
+    }
   };
 
   return (
@@ -90,7 +116,10 @@ const JoinSession = () => {
           <Button
             variant="secondary"
             className="h-11 sm:h-14 text-lg sm:text-xl font-semibold rounded-lg sm:rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors active:scale-95"
-            onClick={() => setCode("")}
+            onClick={() => {
+              setCode("");
+              setShowNameSection(false);
+            }}
           >
             C
           </Button>
@@ -109,6 +138,56 @@ const JoinSession = () => {
             <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
           </Button>
         </div>
+
+        {/* Name Section - shows when code is complete */}
+        {showNameSection && code.length === 4 && (
+          <div className="text-center py-2 sm:py-3 bg-muted/50 rounded-lg sm:rounded-xl animate-fade-in">
+            <p className="text-xs text-muted-foreground mb-0.5 sm:mb-1">You'll join as</p>
+            <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
+              <DialogTrigger asChild>
+                <button 
+                  className="inline-flex items-center gap-1.5 font-semibold text-primary text-sm sm:text-base hover:underline cursor-pointer"
+                  onClick={() => setEditingName(userName)}
+                >
+                  {userName}
+                  <Pencil className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[90vw] sm:max-w-sm">
+                <DialogHeader>
+                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
+                  <DialogDescription>
+                    Enter a display name for this chat session.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  <Input
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    placeholder="Enter your name..."
+                    maxLength={50}
+                    className="h-11"
+                  />
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => setNameDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
+                      onClick={handleNameSave}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
 
         <Button 
           className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-accent to-primary hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"

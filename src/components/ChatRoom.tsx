@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil, Users, Paperclip, X, FileText, Download } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil, Users, Paperclip, X, FileText, Download, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages, uploadFile } from "@/lib/chatUtils";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { useMessageReactions } from "@/hooks/useMessageReactions";
 import { useOnlineUsers } from "@/hooks/useOnlineUsers";
+import { useMessageReads } from "@/hooks/useMessageReads";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { useTheme } from "next-themes";
 import {
@@ -53,7 +54,17 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
   const { reactions, toggleReaction } = useMessageReactions(sessionCode, userName);
   const { onlineUsers, onlineCount } = useOnlineUsers(sessionCode, userName);
+  const { markAsRead, getReadersForMessage } = useMessageReads(sessionCode, userName);
   const { theme } = useTheme();
+
+  // Mark messages as read when they come into view
+  useEffect(() => {
+    messages.forEach(msg => {
+      if (!msg.isSystem && !msg.isOwn) {
+        markAsRead(msg.id, msg.sender);
+      }
+    });
+  }, [messages, markAsRead]);
 
   useEffect(() => {
     console.log('ChatRoom mounted for session:', sessionCode, 'user:', userName);
@@ -338,9 +349,44 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                 <p className="break-words text-sm sm:text-base">{message.content}</p>
                 {renderFilePreview(message)}
                 {!message.isSystem && (
-                  <p className={`text-[10px] sm:text-xs mt-0.5 sm:mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
-                    {formatTime(message.timestamp)}
-                  </p>
+                  <div className={`flex items-center gap-1 mt-0.5 sm:mt-1 ${message.isOwn ? "justify-end" : ""}`}>
+                    <p className={`text-[10px] sm:text-xs ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
+                      {formatTime(message.timestamp)}
+                    </p>
+                    {message.isOwn && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="inline-flex">
+                              {(() => {
+                                const readers = getReadersForMessage(message.id, message.sender);
+                                return readers.length > 0 ? (
+                                  <CheckCheck className="w-3 h-3 text-blue-300" />
+                                ) : (
+                                  <Check className="w-3 h-3 text-white/70" />
+                                );
+                              })()}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="left" className="max-w-[150px]">
+                            {(() => {
+                              const readers = getReadersForMessage(message.id, message.sender);
+                              return readers.length > 0 ? (
+                                <div>
+                                  <p className="text-xs font-semibold mb-1">Seen by</p>
+                                  {readers.map((reader, idx) => (
+                                    <p key={idx} className="text-xs text-muted-foreground">{reader}</p>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-xs">Sent</p>
+                              );
+                            })()}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
                 )}
               </div>
               {!message.isSystem && (

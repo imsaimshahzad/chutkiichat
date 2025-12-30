@@ -35,7 +35,51 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Call the cleanup function
+    // First, get expired session codes to clean up their storage files
+    const { data: expiredSessions, error: sessionsError } = await supabase
+      .from('sessions')
+      .select('code')
+      .lt('last_activity_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+    
+    if (sessionsError) {
+      console.error('Error fetching expired sessions:', sessionsError);
+    }
+    
+    // Clean up storage files for expired sessions
+    let filesDeleted = 0;
+    if (expiredSessions && expiredSessions.length > 0) {
+      for (const session of expiredSessions) {
+        try {
+          // List all files in the session folder
+          const { data: files, error: listError } = await supabase.storage
+            .from('chat-attachments')
+            .list(session.code);
+          
+          if (listError) {
+            console.error(`Error listing files for session ${session.code}:`, listError);
+            continue;
+          }
+          
+          if (files && files.length > 0) {
+            const filePaths = files.map(f => `${session.code}/${f.name}`);
+            const { error: deleteError } = await supabase.storage
+              .from('chat-attachments')
+              .remove(filePaths);
+            
+            if (deleteError) {
+              console.error(`Error deleting files for session ${session.code}:`, deleteError);
+            } else {
+              filesDeleted += files.length;
+              console.log(`Deleted ${files.length} files from session ${session.code}`);
+            }
+          }
+        } catch (fileError) {
+          console.error(`Error cleaning up files for session ${session.code}:`, fileError);
+        }
+      }
+    }
+    
+    // Call the cleanup function for database records
     const { data, error } = await supabase.rpc('cleanup_expired_sessions');
     
     if (error) {
@@ -49,13 +93,14 @@ serve(async (req) => {
       );
     }
     
-    console.log(`Cleanup complete. Deleted ${data} expired sessions.`);
+    console.log(`Cleanup complete. Deleted ${data} expired sessions and ${filesDeleted} files.`);
     
     return new Response(
       JSON.stringify({ 
         success: true, 
         deletedCount: data,
-        message: `Cleaned up ${data} expired sessions` 
+        filesDeleted: filesDeleted,
+        message: `Cleaned up ${data} expired sessions and ${filesDeleted} files` 
       }),
       { 
         status: 200, 

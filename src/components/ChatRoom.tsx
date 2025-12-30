@@ -228,6 +228,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       const sanitizedName = sanitizeFilename(file.name);
       const sanitizedFile = new File([file], sanitizedName, { type: file.type });
       
+      // Show privacy warning for file uploads
+      toast.warning("Files uploaded are publicly accessible during the session. Avoid uploading sensitive documents.", {
+        duration: 5000,
+      });
+      
       setSelectedFile(sanitizedFile);
     }
     // Reset input so same file can be selected again

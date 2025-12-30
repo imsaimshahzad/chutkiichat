@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Space Grotesk', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        sans: ['Poppins', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,15 +51,19 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        glass: {
-          DEFAULT: "hsl(var(--glass))",
-          border: "hsl(var(--glass-border))",
+        chutki: {
+          blue: "hsl(var(--chutki-blue))",
+          dark: "hsl(var(--chutki-blue-dark))",
+          light: "hsl(var(--chutki-blue-light))",
         },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "2xl": "1rem",
+        "3xl": "1.5rem",
+        "4xl": "2rem",
       },
       keyframes: {
         "accordion-down": {
@@ -76,14 +80,14 @@ export default {
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
+          "50%": { transform: "translateY(-8px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite linear",
-        float: "float 6s ease-in-out infinite",
+        float: "float 4s ease-in-out infinite",
       },
     },
   },

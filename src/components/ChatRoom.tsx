@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, Users } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, Users, MessageCircle, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
@@ -24,7 +24,6 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   useEffect(() => {
     console.log('ChatRoom mounted for session:', sessionCode, 'user:', userName);
     
-    // Load existing messages
     const loadMessages = async () => {
       console.log('Loading messages for session:', sessionCode);
       const existingMessages = await getMessages(sessionCode);
@@ -36,7 +35,6 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
       }));
       setMessages(messagesWithOwnership);
       
-      // Add join message
       const success = await addMessage(sessionCode, "System", `${userName} joined the chat`, true);
       console.log('Join message added:', success);
     };
@@ -44,7 +42,6 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
     loadMessages();
     inputRef.current?.focus();
 
-    // Subscribe to realtime messages
     console.log('Setting up realtime subscription for session:', sessionCode);
     const channel = supabase
       .channel(`messages-${sessionCode}`)
@@ -67,7 +64,6 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
           };
           
           setMessages(prev => {
-            // Check if message already exists
             if (prev.some(m => m.id === newMsg.id)) {
               console.log('Message already exists, skipping:', newMsg.id);
               return prev;
@@ -104,7 +100,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
 
     const content = newMessage.trim();
     setNewMessage("");
-    stopTyping(); // Stop typing indicator when message is sent
+    stopTyping();
     
     const success = await addMessage(sessionCode, userName, content, false);
     if (!success) {
@@ -127,44 +123,62 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto">
+    <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <header className="glass-card rounded-none rounded-b-2xl p-4 flex items-center justify-between animate-slide-up">
-        <Button variant="ghost" size="icon" onClick={onLeave}>
+      <header className="bg-card border-b border-border p-4 flex items-center justify-between animate-slide-up shadow-sm">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onLeave}
+          className="hover:bg-destructive/10 hover:text-destructive"
+        >
           <ArrowLeft className="w-5 h-5" />
         </Button>
 
         <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <MessageCircle className="w-5 h-5 text-white" />
+          </div>
           <div className="text-center">
-            <p className="text-xs text-muted-foreground">Session</p>
+            <p className="text-xs text-muted-foreground">Chutki Room</p>
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-primary tracking-wider">
+              <span className="font-mono font-bold text-gradient-chutki tracking-[0.2em] text-lg">
                 {sessionCode}
               </span>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-6 w-6"
+                className="h-7 w-7 hover:bg-primary/10"
                 onClick={handleCopyCode}
               >
                 {copied ? (
-                  <Check className="w-3 h-3 text-accent" />
+                  <Check className="w-4 h-4 text-green-500" />
                 ) : (
-                  <Copy className="w-3 h-3" />
+                  <Copy className="w-4 h-4 text-primary" />
                 )}
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Users className="w-4 h-4" />
-          <span className="text-sm">Live</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-green-700">
+          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <span className="text-sm font-medium">Live</span>
         </div>
       </header>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+              <MessageCircle className="w-8 h-8 text-primary" />
+            </div>
+            <p className="font-medium">No messages yet</p>
+            <p className="text-sm">Start the conversation!</p>
+          </div>
+        )}
+        
         {messages.map((message) => (
           <div
             key={message.id}
@@ -173,20 +187,20 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.isSystem
-                  ? "bg-secondary/50 text-muted-foreground text-center text-sm mx-auto"
+                  ? "bg-muted text-muted-foreground text-center text-sm mx-auto rounded-xl"
                   : message.isOwn
-                  ? "bg-primary text-primary-foreground rounded-br-md"
-                  : "glass-card rounded-bl-md"
+                  ? "bg-gradient-to-br from-primary to-accent text-white rounded-br-md shadow-md"
+                  : "bg-card border border-border rounded-bl-md shadow-sm"
               }`}
             >
               {!message.isSystem && !message.isOwn && (
-                <p className="text-xs text-accent font-semibold mb-1">
+                <p className="text-xs text-primary font-semibold mb-1">
                   {message.sender}
                 </p>
               )}
               <p className="break-words">{message.content}</p>
               {!message.isSystem && (
-                <p className={`text-xs mt-1 ${message.isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                <p className={`text-xs mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
                   {formatTime(message.timestamp)}
                 </p>
               )}
@@ -197,12 +211,12 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
         {/* Typing Indicator */}
         {typingText && (
           <div className="flex justify-start animate-fade-in">
-            <div className="glass-card rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
                 <span className="text-sm text-muted-foreground">{typingText}</span>
               </div>
@@ -214,10 +228,10 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
       </div>
 
       {/* Input */}
-      <div className="p-4 glass-card rounded-none rounded-t-2xl">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="p-4 bg-card border-t border-border">
+        <div className="flex items-center gap-2 mb-3">
           <span className="text-xs text-muted-foreground">Chatting as</span>
-          <span className="text-xs font-semibold text-accent">{userName}</span>
+          <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{userName}</span>
         </div>
         <div className="flex gap-3">
           <Input
@@ -231,14 +245,12 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
               }
             }}
             onKeyDown={handleKeyDown}
-            className="flex-1"
+            className="flex-1 h-12 rounded-xl border-border focus:border-primary"
           />
           <Button 
-            variant="hero" 
-            size="icon" 
             onClick={handleSend}
             disabled={!newMessage.trim()}
-            className="shrink-0"
+            className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50"
           >
             <Send className="w-5 h-5" />
           </Button>

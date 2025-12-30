@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Copy, Check, ArrowRight } from "lucide-react";
+import { Sparkles, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SessionCard from "./SessionCard";
 import { generateSessionCode, generateAnonymousName, createSession } from "@/lib/chatUtils";
@@ -21,9 +21,9 @@ const CreateSession = () => {
     
     if (success) {
       setSessionCode(code);
-      toast.success("Session created! Share the code with others.");
+      toast.success("Your Chutki room is ready!");
     } else {
-      toast.error("Failed to create session. Try again.");
+      toast.error("Failed to create room. Try again.");
     }
     setIsCreating(false);
   };
@@ -32,14 +32,13 @@ const CreateSession = () => {
     if (sessionCode) {
       await navigator.clipboard.writeText(sessionCode);
       setCopied(true);
-      toast.success("Code copied to clipboard!");
+      toast.success("Code copied!");
       setTimeout(() => setCopied(false), 2000);
     }
   };
 
   const handleJoinChat = () => {
     if (sessionCode) {
-      // Store the username before navigating
       sessionStorage.setItem(`room-${sessionCode}-user`, userName);
       navigate(`/room/${sessionCode}`);
     }
@@ -48,61 +47,66 @@ const CreateSession = () => {
   return (
     <SessionCard delay={100}>
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 rounded-xl bg-primary/20">
-          <Plus className="w-6 h-6 text-primary" />
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
+          <Sparkles className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-foreground">Create Session</h2>
-          <p className="text-sm text-muted-foreground">Start a new chat room</p>
+          <h2 className="text-xl font-bold text-foreground">Create a New Chutki</h2>
+          <p className="text-sm text-muted-foreground">Start your temporary chat room</p>
         </div>
       </div>
 
       {!sessionCode ? (
         <Button 
-          variant="hero" 
-          size="lg" 
-          className="w-full"
+          className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-lg shadow-lg transition-all hover:scale-[1.02]"
           onClick={handleCreate}
           disabled={isCreating}
         >
-          {isCreating ? "Creating..." : "Create New Session"}
-          <Plus className="w-5 h-5" />
+          {isCreating ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Creating...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-5 h-5" />
+              Start Chutki
+            </>
+          )}
         </Button>
       ) : (
         <div className="space-y-4">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-2">Your session code</p>
-            <div className="flex items-center justify-center gap-2">
-              <span className="font-mono text-3xl font-bold text-primary tracking-widest">
+          <div className="text-center bg-secondary/50 rounded-2xl p-4">
+            <p className="text-sm text-muted-foreground mb-2">Your Chutki Code</p>
+            <div className="flex items-center justify-center gap-3">
+              <span className="font-mono text-4xl font-bold text-gradient-chutki tracking-[0.3em]">
                 {sessionCode}
               </span>
               <Button 
                 variant="ghost" 
                 size="icon"
                 onClick={handleCopy}
-                className="shrink-0"
+                className="shrink-0 hover:bg-primary/10"
               >
                 {copied ? (
-                  <Check className="w-5 h-5 text-accent" />
+                  <Check className="w-5 h-5 text-green-500" />
                 ) : (
-                  <Copy className="w-5 h-5" />
+                  <Copy className="w-5 h-5 text-primary" />
                 )}
               </Button>
             </div>
           </div>
 
-          <div className="text-center py-3 bg-secondary/50 rounded-xl">
-            <p className="text-xs text-muted-foreground mb-1">Your identity</p>
-            <p className="font-semibold text-accent">{userName}</p>
+          <div className="text-center py-3 bg-muted/50 rounded-xl">
+            <p className="text-xs text-muted-foreground mb-1">You'll chat as</p>
+            <p className="font-semibold text-primary">{userName}</p>
           </div>
 
           <Button 
-            variant="hero" 
-            size="lg" 
-            className="w-full"
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-lg shadow-lg transition-all hover:scale-[1.02]"
             onClick={handleJoinChat}
           >
-            Enter Chat
+            Enter Room
             <ArrowRight className="w-5 h-5" />
           </Button>
         </div>

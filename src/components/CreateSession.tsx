@@ -1,15 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SessionCard from "./SessionCard";
 import { generateSessionCode, generateAnonymousName, createSession } from "@/lib/chatUtils";
 import { toast } from "sonner";
 
-interface CreateSessionProps {
-  onSessionCreated: (code: string, userName: string) => void;
-}
-
-const CreateSession = ({ onSessionCreated }: CreateSessionProps) => {
+const CreateSession = () => {
+  const navigate = useNavigate();
   const [sessionCode, setSessionCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [userName] = useState(generateAnonymousName());
@@ -41,7 +39,9 @@ const CreateSession = ({ onSessionCreated }: CreateSessionProps) => {
 
   const handleJoinChat = () => {
     if (sessionCode) {
-      onSessionCreated(sessionCode, userName);
+      // Store the username before navigating
+      sessionStorage.setItem(`room-${sessionCode}-user`, userName);
+      navigate(`/room/${sessionCode}`);
     }
   };
 

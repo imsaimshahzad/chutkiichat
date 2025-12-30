@@ -188,6 +188,20 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
     }
   };
 
+  // Allowed MIME types for file uploads
+  const ALLOWED_MIME_TYPES = [
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+    'application/pdf', 'text/plain',
+    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ];
+  
+  const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'txt', 'doc', 'docx'];
+  
+  // Sanitize filename to prevent path traversal attacks
+  const sanitizeFilename = (name: string): string => {
+    return name.replace(/[^a-zA-Z0-9._-]/g, '_').substring(0, 100);
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -196,7 +210,25 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
         toast.error("File size must be less than 10MB");
         return;
       }
-      setSelectedFile(file);
+      
+      // Validate MIME type
+      if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+        toast.error("File type not allowed. Allowed: images, PDF, TXT, DOC");
+        return;
+      }
+      
+      // Validate file extension
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      if (!extension || !ALLOWED_EXTENSIONS.includes(extension)) {
+        toast.error("File extension not allowed");
+        return;
+      }
+      
+      // Create a new file with sanitized name
+      const sanitizedName = sanitizeFilename(file.name);
+      const sanitizedFile = new File([file], sanitizedName, { type: file.type });
+      
+      setSelectedFile(sanitizedFile);
     }
     // Reset input so same file can be selected again
     e.target.value = '';

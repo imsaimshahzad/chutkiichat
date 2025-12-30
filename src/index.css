@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Light Mode: White & Blue theme */
+    /* Light Mode: White & Blue theme with Liquid Glass */
     --background: 210 20% 98%;
     --foreground: 222 47% 11%;
 
@@ -41,6 +41,12 @@
     /* Visual viewport height */
     --app-height: 100vh;
 
+    /* Liquid Glass tokens - Light */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 0 0% 100% / 0.5;
+    --glass-shine: 0 0% 100% / 0.8;
+    --glass-blur: 20px;
+
     /* Chat specific tokens - Light (Blue theme) */
     --wa-header: 217 91% 55%;
     --wa-header-dark: 217 91% 45%;
@@ -53,10 +59,11 @@
     /* Shadows */
     --shadow-soft: 0 1px 3px hsl(217 91% 60% / 0.1);
     --shadow-card: 0 2px 8px hsl(222 47% 11% / 0.08);
+    --shadow-glass: 0 8px 32px hsl(217 91% 60% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.5);
   }
 
   .dark {
-    /* Dark Mode: Full Black & Red theme */
+    /* Dark Mode: Full Black & Red theme with Liquid Glass */
     --background: 0 0% 4%;
     --foreground: 0 0% 98%;
 
@@ -86,6 +93,12 @@
     --input: 0 0% 15%;
     --ring: 0 84% 60%;
 
+    /* Liquid Glass tokens - Dark */
+    --glass-bg: 0 0% 10% / 0.6;
+    --glass-border: 0 0% 100% / 0.1;
+    --glass-shine: 0 0% 100% / 0.05;
+    --glass-blur: 24px;
+
     /* Chat specific tokens - Dark (Red theme) */
     --wa-header: 0 0% 10%;
     --wa-header-dark: 0 0% 7%;
@@ -98,6 +111,7 @@
     /* Shadows for dark mode */
     --shadow-soft: 0 1px 3px hsl(0 0% 0% / 0.5);
     --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.6);
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(0 0% 100% / 0.05);
   }
 }
 
@@ -127,7 +141,6 @@
     min-height: 100%;
   }
 
-
   .app-viewport {
     height: var(--app-height);
   }
@@ -144,6 +157,124 @@
 }
 
 @layer components {
+  /* Liquid Glass Effect */
+  .liquid-glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: var(--shadow-glass);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--glass-shine)) 0%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Liquid Glass Card variant */
+  .liquid-glass-card {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: var(--shadow-glass);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--glass-shine)) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%) rotate(15deg);
+    pointer-events: none;
+  }
+
+  .liquid-glass-card:hover::before {
+    animation: glass-shine 1.5s ease-in-out;
+  }
+
+  /* Liquid Glass Button */
+  .liquid-glass-button {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.2), inset 0 1px 0 hsl(0 0% 100% / 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      hsl(0 0% 100% / 0.2) 0%,
+      transparent 50%,
+      hsl(0 0% 0% / 0.1) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Animated liquid blob background */
+  .liquid-bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-bg::before,
+  .liquid-bg::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: liquid-float 8s ease-in-out infinite;
+  }
+
+  .liquid-bg::before {
+    width: 300px;
+    height: 300px;
+    background: hsl(var(--primary) / 0.3);
+    top: -100px;
+    left: -100px;
+  }
+
+  .liquid-bg::after {
+    width: 400px;
+    height: 400px;
+    background: hsl(var(--accent) / 0.2);
+    bottom: -150px;
+    right: -150px;
+    animation-delay: -4s;
+    animation-direction: reverse;
+  }
+
   /* Chat Header */
   .wa-header {
     @apply bg-[hsl(var(--wa-header))] text-white;
@@ -238,6 +369,10 @@
   .animate-fade-in {
     animation: fade-in 0.4s ease-out;
   }
+
+  .animate-sparkle {
+    animation: sparkle 2s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
@@ -269,6 +404,26 @@
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+@keyframes glass-shine {
+  0% { transform: translateX(-100%) rotate(15deg); }
+  100% { transform: translateX(100%) rotate(15deg); }
+}
+
+@keyframes liquid-float {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  50% { 
+    transform: translate(0, -50px) scale(1);
+  }
+  75% {
+    transform: translate(-30px, -30px) scale(0.9);
+  }
 }
 
 .animate-pulse-soft {

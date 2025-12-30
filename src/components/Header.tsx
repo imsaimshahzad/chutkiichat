@@ -195,7 +195,7 @@ const Header = () => {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-primary/20 shadow-sm shadow-primary/5">
+    <header className="fixed top-0 left-0 right-0 z-50 liquid-glass border-b-0">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 group">

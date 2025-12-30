@@ -136,7 +136,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onOpenChange })
   };
 
   const handleChangePassword = async () => {
-    if (!newPassword || !confirmPassword) {
+    if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error('Please fill in all password fields');
       return;
     }
@@ -151,8 +151,26 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onOpenChange })
       return;
     }
 
+    if (!user?.email) {
+      toast.error('Unable to verify account');
+      return;
+    }
+
     setIsChangingPassword(true);
     try {
+      // First verify current password by re-authenticating
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      });
+
+      if (signInError) {
+        toast.error('Current password is incorrect');
+        setIsChangingPassword(false);
+        return;
+      }
+
+      // If verification successful, update to new password
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
@@ -278,6 +296,17 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onOpenChange })
 
           <TabsContent value="security" className="space-y-4 mt-4">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="currentPassword">Current Password</Label>
+                <Input
+                  id="currentPassword"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password"
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="newPassword">New Password</Label>
                 <Input

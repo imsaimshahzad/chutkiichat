@@ -703,24 +703,24 @@ const ChatApp = () => {
       <div className="app-viewport flex bg-background overflow-hidden">
         {/* Desktop Sidebar */}
         <div className="hidden md:flex w-[30%] min-w-[300px] max-w-[400px] flex-col bg-card wa-sidebar flex-shrink-0">
-          <SidebarContent />
+          {SidebarContent()}
         </div>
 
         {/* Mobile Sidebar */}
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
           <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
-            <SidebarContent />
+            {SidebarContent()}
           </SheetContent>
         </Sheet>
 
         {/* Chat Area */}
         <div className={`flex-1 flex flex-col min-w-0 ${showMobileChat ? '' : 'hidden md:flex'}`}>
-          <ChatArea />
+          {ChatArea()}
         </div>
 
         {/* Mobile: Show conversations list when no chat selected */}
         <div className={`flex-1 flex-col md:hidden min-w-0 ${!showMobileChat ? 'flex' : 'hidden'}`}>
-          <SidebarContent />
+          {SidebarContent()}
         </div>
       </div>
 

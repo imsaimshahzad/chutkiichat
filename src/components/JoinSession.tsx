@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SessionCard from "./SessionCard";
@@ -6,11 +7,8 @@ import NumberKeyboard from "./NumberKeyboard";
 import { generateAnonymousName, sessionExists } from "@/lib/chatUtils";
 import { toast } from "sonner";
 
-interface JoinSessionProps {
-  onSessionJoined: (code: string, userName: string) => void;
-}
-
-const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
+const JoinSession = () => {
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,10 +45,12 @@ const JoinSession = ({ onSessionJoined }: JoinSessionProps) => {
       return;
     }
 
+    // Generate and store username before navigating
     const userName = generateAnonymousName();
+    sessionStorage.setItem(`room-${trimmedCode}-user`, userName);
+    
     toast.success(`Joined as ${userName}`);
-    onSessionJoined(trimmedCode, userName);
-    setIsLoading(false);
+    navigate(`/room/${trimmedCode}`);
   };
 
   // Render code display boxes

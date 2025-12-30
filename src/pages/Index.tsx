@@ -1,40 +1,8 @@
-import { useState } from "react";
 import LandingHero from "@/components/LandingHero";
 import CreateSession from "@/components/CreateSession";
 import JoinSession from "@/components/JoinSession";
-import ChatRoom from "@/components/ChatRoom";
-
-type View = "landing" | "chat";
-
-interface SessionState {
-  code: string;
-  userName: string;
-}
 
 const Index = () => {
-  const [view, setView] = useState<View>("landing");
-  const [session, setSession] = useState<SessionState | null>(null);
-
-  const handleSessionStart = (code: string, userName: string) => {
-    setSession({ code, userName });
-    setView("chat");
-  };
-
-  const handleLeaveChat = () => {
-    setSession(null);
-    setView("landing");
-  };
-
-  if (view === "chat" && session) {
-    return (
-      <ChatRoom
-        sessionCode={session.code}
-        userName={session.userName}
-        onLeave={handleLeaveChat}
-      />
-    );
-  }
-
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6">
       {/* Background decoration */}
@@ -47,8 +15,8 @@ const Index = () => {
         <LandingHero />
 
         <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch">
-          <CreateSession onSessionCreated={handleSessionStart} />
-          <JoinSession onSessionJoined={handleSessionStart} />
+          <CreateSession />
+          <JoinSession />
         </div>
 
         {/* Footer */}

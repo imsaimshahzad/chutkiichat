@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ChatRoom from "@/components/ChatRoom";
 import { sessionExists, generateAnonymousName } from "@/lib/chatUtils";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { MessageCircle, Zap } from "lucide-react";
 
 const Room = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +19,6 @@ const Room = () => {
         return;
       }
 
-      // Check for stored username in sessionStorage (for page refreshes)
       const storedUser = sessionStorage.getItem(`room-${id}-user`);
       
       if (storedUser) {
@@ -28,17 +27,15 @@ const Room = () => {
         return;
       }
 
-      // Check if session exists
       const exists = await sessionExists(id);
       
       if (!exists) {
-        setError("Session not found");
-        toast.error("Session not found. Redirecting...");
+        setError("Room not found");
+        toast.error("This Chutki room doesn't exist. Redirecting...");
         setTimeout(() => navigate("/"), 2000);
         return;
       }
 
-      // Generate anonymous name and store it
       const newUserName = generateAnonymousName();
       sessionStorage.setItem(`room-${id}-user`, newUserName);
       setUserName(newUserName);
@@ -59,17 +56,30 @@ const Room = () => {
 
   if (isLoading || error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
         <div className="text-center space-y-4">
           {error ? (
             <>
-              <p className="text-destructive text-lg">{error}</p>
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+                <MessageCircle className="w-8 h-8 text-destructive" />
+              </div>
+              <p className="text-destructive text-lg font-medium">{error}</p>
               <p className="text-muted-foreground">Redirecting to home...</p>
             </>
           ) : (
             <>
-              <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
-              <p className="text-muted-foreground">Joining room...</p>
+              <div className="relative">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                  <MessageCircle className="w-10 h-10 text-white" />
+                  <Zap className="w-5 h-5 text-yellow-400 absolute -top-1 -right-1 animate-sparkle" />
+                </div>
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              </div>
+              <p className="text-muted-foreground font-medium">Joining Chutki room...</p>
             </>
           )}
         </div>

@@ -4,6 +4,7 @@ import { useConversations, Conversation } from '@/hooks/useConversations';
 import { useChatMessages, ChatMessage } from '@/hooks/useChatMessages';
 import { useContacts } from '@/hooks/useContacts';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import ProfileSettings from '@/components/ProfileSettings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -48,6 +49,7 @@ const ChatApp = () => {
   const [showMobileChat, setShowMobileChat] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -270,11 +272,22 @@ const ChatApp = () => {
               </div>
             </DialogContent>
           </Dialog>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsSettingsOpen(true)} 
+            className="h-10 w-10 active:scale-95 transition-transform"
+            title="Settings"
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
           <Button variant="ghost" size="icon" onClick={handleLogout} className="h-10 w-10 active:scale-95 transition-transform">
             <LogOut className="h-5 w-5" />
           </Button>
         </div>
       </div>
+
+      <ProfileSettings open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
 
       {/* Conversations List */}
       <ScrollArea className="flex-1">

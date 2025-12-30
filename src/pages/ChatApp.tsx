@@ -4,6 +4,7 @@ import { useConversations, Conversation } from '@/hooks/useConversations';
 import { useChatMessages, ChatMessage } from '@/hooks/useChatMessages';
 import { useContacts } from '@/hooks/useContacts';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import { useAppViewportHeight } from '@/hooks/useAppViewportHeight';
 import ProfileSettings from '@/components/ProfileSettings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,6 +35,8 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 const ChatApp = () => {
+  useAppViewportHeight();
+
   const navigate = useNavigate();
   const { user, profile, signOut, isAdmin } = useAuth();
   const { conversations, loading: convsLoading, createConversation, refreshConversations } = useConversations();
@@ -513,10 +516,6 @@ const ChatApp = () => {
                 autoComplete="off"
                 autoCorrect="off"
                 enterKeyHint="send"
-                onFocus={(e) => {
-                  // Prevent iOS keyboard from pushing content
-                  e.target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }}
               />
               <Button 
                 type="submit" 
@@ -546,7 +545,7 @@ const ChatApp = () => {
   if (!user) return null;
 
   return (
-    <div className="h-[100dvh] flex bg-background overflow-hidden">
+    <div className="app-viewport flex bg-background overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-80 lg:w-96 border-r border-border flex-col bg-card flex-shrink-0">
         <SidebarContent />

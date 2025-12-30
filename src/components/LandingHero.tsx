@@ -16,22 +16,22 @@ const LandingHero = () => {
       
       {/* App Name */}
       <h1 className="text-5xl md:text-7xl font-extrabold mb-4">
-        <span className="text-gradient-chutki">Chutki</span>
-        <span className="text-foreground">Chat</span>
+        <span className="text-gradient-chutki">Raja Ki</span>
+        <span className="text-foreground"> Rani</span>
       </h1>
       
       {/* Tagline */}
       <div className="flex items-center justify-center gap-2 mb-6">
         <Sparkles className="w-5 h-5 text-primary animate-sparkle" />
         <p className="text-lg md:text-xl text-muted-foreground font-medium">
-          Chat in Chutki, Disappear in Chutki!
+          Chat Like Royalty, Vanish Like Magic!
         </p>
         <Sparkles className="w-5 h-5 text-primary animate-sparkle" />
       </div>
       
       {/* Description */}
       <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed font-body">
-        Start instant, anonymous conversations with just a 4-digit code. 
+        Start instant, anonymous conversations with a simple code. 
         No sign-ups, no history, no traces. Just pure, temporary chat magic.
       </p>
     </div>

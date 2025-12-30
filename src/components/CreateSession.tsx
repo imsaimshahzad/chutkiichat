@@ -68,8 +68,8 @@ const CreateSession = () => {
   return (
     <SessionCard delay={100}>
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shrink-0">
-          <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
+          <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
         </div>
         <div className="min-w-0">
           <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Create a New Chutkii</h2>
@@ -79,7 +79,7 @@ const CreateSession = () => {
 
       {!sessionCode ? (
         <Button 
-          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
           onClick={handleCreate}
           disabled={isCreating}
         >
@@ -97,10 +97,10 @@ const CreateSession = () => {
         </Button>
       ) : (
         <div className="space-y-3 sm:space-y-4">
-          <div className="text-center bg-secondary/50 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+          <div className="text-center bg-primary/10 border border-primary/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
             <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Your Chutkii Code</p>
             <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <span className="font-mono text-2xl sm:text-4xl font-bold text-gradient-chutki tracking-[0.2em] sm:tracking-[0.3em]">
+              <span className="font-mono text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent tracking-[0.2em] sm:tracking-[0.3em]">
                 {sessionCode}
               </span>
               <Button 
@@ -118,7 +118,7 @@ const CreateSession = () => {
             </div>
           </div>
 
-          <div className="text-center py-2 sm:py-3 bg-muted/50 rounded-lg sm:rounded-xl">
+          <div className="text-center py-2 sm:py-3 bg-muted/30 border border-border/50 rounded-lg sm:rounded-xl">
             <p className="text-xs text-muted-foreground mb-0.5 sm:mb-1">You'll chat as</p>
             <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
               <DialogTrigger asChild>
@@ -154,7 +154,7 @@ const CreateSession = () => {
                       Cancel
                     </Button>
                     <Button 
-                      className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
+                      className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20"
                       onClick={handleNameSave}
                     >
                       Save
@@ -166,7 +166,7 @@ const CreateSession = () => {
           </div>
 
           <Button 
-            className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
             onClick={handleJoinChat}
           >
             Enter Room

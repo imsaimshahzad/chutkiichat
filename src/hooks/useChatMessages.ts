@@ -148,10 +148,51 @@ export const useChatMessages = (conversationId: string | null) => {
     }
   };
 
+  const deleteMessage = async (messageId: string) => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('id', messageId)
+        .eq('sender_id', user.id);
+
+      if (error) throw error;
+
+      setMessages(prev => prev.filter(m => m.id !== messageId));
+      return true;
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      return false;
+    }
+  };
+
+  const clearChat = async () => {
+    if (!conversationId || !user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('conversation_id', conversationId);
+
+      if (error) throw error;
+
+      setMessages([]);
+      return true;
+    } catch (error) {
+      console.error('Error clearing chat:', error);
+      return false;
+    }
+  };
+
   return {
     messages,
     loading,
     sendMessage,
+    deleteMessage,
+    clearChat,
     refreshMessages: fetchMessages,
   };
 };

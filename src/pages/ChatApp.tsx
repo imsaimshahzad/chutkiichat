@@ -4,6 +4,7 @@ import { useConversations, Conversation } from '@/hooks/useConversations';
 import { useChatMessages, ChatMessage } from '@/hooks/useChatMessages';
 import { useContacts } from '@/hooks/useContacts';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useAppViewportHeight } from '@/hooks/useAppViewportHeight';
 import ProfileSettings from '@/components/ProfileSettings';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import {
   MessageCircle,
   Send,
@@ -29,6 +32,10 @@ import {
   Loader2,
   Users,
   Shield,
+  Trash2,
+  Ban,
+  UserX,
+  Eraser,
 } from 'lucide-react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
@@ -39,11 +46,12 @@ const ChatApp = () => {
 
   const navigate = useNavigate();
   const { user, profile, signOut, isAdmin } = useAuth();
-  const { conversations, loading: convsLoading, createConversation, refreshConversations } = useConversations();
+  const { conversations, loading: convsLoading, createConversation, deleteConversation, refreshConversations } = useConversations();
   const { contacts, searchUsers, addContact } = useContacts();
   const { users: allUsers, loading: usersLoading } = useAllUsers();
+  const { blockUser, unblockUser, isBlocked } = useBlockedUsers();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const { messages, loading: msgsLoading, sendMessage } = useChatMessages(selectedConversation?.id || null);
+  const { messages, loading: msgsLoading, sendMessage, deleteMessage, clearChat } = useChatMessages(selectedConversation?.id || null);
   
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,6 +62,10 @@ const ChatApp = () => {
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreatingChat, setIsCreatingChat] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+  const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
+  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -151,6 +163,70 @@ const ChatApp = () => {
   const handleLogout = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleDeleteMessage = async () => {
+    if (!selectedMessageId) return;
+    const success = await deleteMessage(selectedMessageId);
+    if (success) {
+      toast.success('Message deleted');
+    } else {
+      toast.error('Failed to delete message');
+    }
+    setSelectedMessageId(null);
+  };
+
+  const handleClearChat = async () => {
+    const success = await clearChat();
+    if (success) {
+      toast.success('Chat cleared');
+    } else {
+      toast.error('Failed to clear chat');
+    }
+    setClearConfirmOpen(false);
+  };
+
+  const handleDeleteConversation = async () => {
+    if (!selectedConversation) return;
+    const success = await deleteConversation(selectedConversation.id);
+    if (success) {
+      setSelectedConversation(null);
+      setShowMobileChat(false);
+      toast.success('Chat deleted');
+    } else {
+      toast.error('Failed to delete chat');
+    }
+    setDeleteConfirmOpen(false);
+  };
+
+  const handleBlockUser = async () => {
+    if (!selectedConversation || selectedConversation.is_group) return;
+    const participantId = selectedConversation.participants[0]?.id;
+    if (!participantId) return;
+
+    const currentlyBlocked = isBlocked(participantId);
+    
+    if (currentlyBlocked) {
+      const success = await unblockUser(participantId);
+      if (success) {
+        toast.success('User unblocked');
+      } else {
+        toast.error('Failed to unblock user');
+      }
+    } else {
+      const success = await blockUser(participantId);
+      if (success) {
+        toast.success('User blocked');
+      } else {
+        toast.error('Failed to block user');
+      }
+    }
+    setBlockConfirmOpen(false);
+  };
+
+  const getParticipantId = () => {
+    if (!selectedConversation || selectedConversation.is_group) return null;
+    return selectedConversation.participants[0]?.id || null;
   };
 
   const formatMessageTime = (dateStr: string) => {
@@ -442,9 +518,41 @@ const ChatApp = () => {
               <Button variant="ghost" size="icon" className="h-10 w-10 hidden sm:flex">
                 <Video className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-10 w-10">
-                <MoreVertical className="h-5 w-5" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-10 w-10">
+                    <MoreVertical className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => setClearConfirmOpen(true)} className="text-destructive focus:text-destructive">
+                    <Eraser className="h-4 w-4 mr-2" />
+                    Clear Chat
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDeleteConfirmOpen(true)} className="text-destructive focus:text-destructive">
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete Chat
+                  </DropdownMenuItem>
+                  {!selectedConversation.is_group && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setBlockConfirmOpen(true)}>
+                        {isBlocked(getParticipantId() || '') ? (
+                          <>
+                            <UserX className="h-4 w-4 mr-2" />
+                            Unblock User
+                          </>
+                        ) : (
+                          <>
+                            <Ban className="h-4 w-4 mr-2" />
+                            Block User
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -466,32 +574,49 @@ const ChatApp = () => {
                 {messages.map((msg) => {
                   const isOwn = msg.sender_id === user?.id;
                   return (
-                    <div
-                      key={msg.id}
-                      className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-[75%] rounded-2xl px-4 py-2 ${
-                          isOwn
-                            ? 'bg-primary text-primary-foreground rounded-br-md'
-                            : 'bg-muted text-foreground rounded-bl-md'
-                        }`}
-                      >
-                        <p className="break-words">{msg.content}</p>
-                        <div className={`flex items-center gap-1 mt-1 ${isOwn ? 'justify-end' : ''}`}>
-                          <span className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                            {formatMessageTime(msg.created_at)}
-                          </span>
-                          {isOwn && (
-                            msg.is_read ? (
-                              <CheckCheck className="h-3 w-3 text-blue-300" />
-                            ) : (
-                              <Check className="h-3 w-3 text-primary-foreground/70" />
-                            )
-                          )}
+                    <DropdownMenu key={msg.id}>
+                      <DropdownMenuTrigger asChild>
+                        <div
+                          className={`flex ${isOwn ? 'justify-end' : 'justify-start'} cursor-pointer`}
+                        >
+                          <div
+                            className={`max-w-[75%] rounded-2xl px-4 py-2 ${
+                              isOwn
+                                ? 'bg-primary text-primary-foreground rounded-br-md'
+                                : 'bg-muted text-foreground rounded-bl-md'
+                            } hover:opacity-90 transition-opacity`}
+                          >
+                            <p className="break-words">{msg.content}</p>
+                            <div className={`flex items-center gap-1 mt-1 ${isOwn ? 'justify-end' : ''}`}>
+                              <span className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                                {formatMessageTime(msg.created_at)}
+                              </span>
+                              {isOwn && (
+                                msg.is_read ? (
+                                  <CheckCheck className="h-3 w-3 text-blue-300" />
+                                ) : (
+                                  <Check className="h-3 w-3 text-primary-foreground/70" />
+                                )
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      </DropdownMenuTrigger>
+                      {isOwn && (
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              setSelectedMessageId(msg.id);
+                              handleDeleteMessage();
+                            }}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete Message
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      )}
+                    </DropdownMenu>
                   );
                 })}
                 <div ref={messagesEndRef} />
@@ -545,29 +670,90 @@ const ChatApp = () => {
   if (!user) return null;
 
   return (
-    <div className="app-viewport flex bg-background overflow-hidden">
-      {/* Desktop Sidebar */}
-      <div className="hidden md:flex w-80 lg:w-96 border-r border-border flex-col bg-card flex-shrink-0">
-        <SidebarContent />
-      </div>
-
-      {/* Mobile Sidebar */}
-      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
+    <>
+      <div className="app-viewport flex bg-background overflow-hidden">
+        {/* Desktop Sidebar */}
+        <div className="hidden md:flex w-80 lg:w-96 border-r border-border flex-col bg-card flex-shrink-0">
           <SidebarContent />
-        </SheetContent>
-      </Sheet>
+        </div>
 
-      {/* Chat Area */}
-      <div className={`flex-1 flex flex-col min-w-0 ${showMobileChat ? '' : 'hidden md:flex'}`}>
-        <ChatArea />
+        {/* Mobile Sidebar */}
+        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+          <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+
+        {/* Chat Area */}
+        <div className={`flex-1 flex flex-col min-w-0 ${showMobileChat ? '' : 'hidden md:flex'}`}>
+          <ChatArea />
+        </div>
+
+        {/* Mobile: Show conversations list when no chat selected */}
+        <div className={`flex-1 flex-col md:hidden min-w-0 ${!showMobileChat ? 'flex' : 'hidden'}`}>
+          <SidebarContent />
+        </div>
       </div>
 
-      {/* Mobile: Show conversations list when no chat selected */}
-      <div className={`flex-1 flex-col md:hidden min-w-0 ${!showMobileChat ? 'flex' : 'hidden'}`}>
-        <SidebarContent />
-      </div>
-    </div>
+      {/* Clear Chat Confirmation */}
+      <AlertDialog open={clearConfirmOpen} onOpenChange={setClearConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear Chat</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to clear all messages in this chat? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearChat} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Clear Chat
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Chat Confirmation */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Chat</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this entire conversation? All messages will be permanently deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConversation} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete Chat
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Block User Confirmation */}
+      <AlertDialog open={blockConfirmOpen} onOpenChange={setBlockConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {isBlocked(getParticipantId() || '') ? 'Unblock User' : 'Block User'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {isBlocked(getParticipantId() || '') 
+                ? 'Are you sure you want to unblock this user? They will be able to send you messages again.'
+                : 'Are you sure you want to block this user? You will no longer receive messages from them.'
+              }
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleBlockUser}>
+              {isBlocked(getParticipantId() || '') ? 'Unblock' : 'Block'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 

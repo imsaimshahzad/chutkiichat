@@ -23,7 +23,7 @@ const Header = () => {
             <Zap className="w-4 h-4 text-yellow-400 absolute -top-1 -right-1 animate-sparkle" />
           </div>
           <span className="text-xl font-bold">
-            <span className="text-gradient-chutki">Chutki</span>
+            <span className="text-gradient-chutki">Chutkii</span>
             <span className="text-foreground">Chat</span>
           </span>
         </a>
@@ -39,10 +39,10 @@ const Header = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="text-gradient-chutki text-xl">About ChutkiChat</DialogTitle>
+                <DialogTitle className="text-gradient-chutki text-xl">About ChutkiiChat</DialogTitle>
                 <DialogDescription className="pt-4 text-foreground/80">
                   <p className="mb-3">
-                    ChutkiChat is a temporary, anonymous chat application. No accounts, no history, no traces.
+                    ChutkiiChat is a temporary, anonymous chat application. No accounts, no history, no traces.
                   </p>
                   <p className="mb-3">
                     Create a room with a simple 4-digit code, share it with friends, and start chatting instantly. 
@@ -213,7 +213,7 @@ const Header = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>About ChutkiChat</DialogTitle>
+                <DialogTitle>About ChutkiiChat</DialogTitle>
                 <DialogDescription>
                   Temporary, anonymous chat. No accounts, no traces.
                 </DialogDescription>

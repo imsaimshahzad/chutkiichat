@@ -16,7 +16,7 @@ const LandingHero = () => {
       
       {/* App Name */}
       <h1 className="text-5xl md:text-7xl font-extrabold mb-4">
-        <span className="text-gradient-chutki">Chutki</span>
+        <span className="text-gradient-chutki">Chutkii</span>
         <span className="text-foreground">Chat</span>
       </h1>
       

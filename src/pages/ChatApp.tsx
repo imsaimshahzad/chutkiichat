@@ -25,6 +25,7 @@ import {
   ArrowLeft,
   Loader2,
   Users,
+  Shield,
 } from 'lucide-react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
@@ -32,7 +33,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ChatApp = () => {
   const navigate = useNavigate();
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isAdmin } = useAuth();
   const { conversations, loading: convsLoading, createConversation } = useConversations();
   const { contacts, searchUsers, addContact } = useContacts();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
@@ -150,6 +151,11 @@ const ChatApp = () => {
           </div>
         </div>
         <div className="flex items-center gap-1">
+          {isAdmin && (
+            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} title="Admin Panel">
+              <Shield className="h-5 w-5 text-primary" />
+            </Button>
+          )}
           <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
             <DialogTrigger asChild>
               <Button variant="ghost" size="icon">

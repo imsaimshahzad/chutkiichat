@@ -253,6 +253,7 @@ export type Database = {
           created_at: string | null
           display_name: string | null
           id: string
+          is_blocked: boolean | null
           is_online: boolean | null
           last_seen: string | null
           status: string | null
@@ -264,6 +265,7 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           id: string
+          is_blocked?: boolean | null
           is_online?: boolean | null
           last_seen?: string | null
           status?: string | null
@@ -275,6 +277,7 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           id?: string
+          is_blocked?: boolean | null
           is_online?: boolean | null
           last_seen?: string | null
           status?: string | null
@@ -335,6 +338,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: { Args: never; Returns: boolean }
+      is_user_blocked: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"

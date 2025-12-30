@@ -22,8 +22,8 @@ const Header = () => {
             <Zap className="w-4 h-4 text-yellow-400 absolute -top-1 -right-1 animate-sparkle" />
           </div>
           <span className="text-xl font-bold">
-            <span className="text-gradient-chutki">Chutki</span>
-            <span className="text-foreground">Chat</span>
+            <span className="text-gradient-chutki">Raja Ki</span>
+            <span className="text-foreground"> Rani</span>
           </span>
         </a>
 
@@ -38,17 +38,17 @@ const Header = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="text-gradient-chutki text-xl">About ChutkiChat</DialogTitle>
+                <DialogTitle className="text-gradient-chutki text-xl">About Raja Ki Rani</DialogTitle>
                 <DialogDescription className="pt-4 text-foreground/80">
                   <p className="mb-3">
-                    ChutkiChat is a temporary, anonymous chat application. No accounts, no history, no traces.
+                    Raja Ki Rani is a temporary, anonymous chat application. No accounts, no history, no traces.
                   </p>
                   <p className="mb-3">
-                    Create a room with a simple 4-digit code, share it with friends, and start chatting instantly. 
+                    Create a room with a simple code, share it with friends, and start chatting instantly. 
                     When everyone leaves, the room vanishes forever.
                   </p>
                   <p className="text-muted-foreground text-sm">
-                    "Chutki" means "in an instant" — that's how fast and temporary your chats are!
+                    Chat like royalty, vanish like magic!
                   </p>
                 </DialogDescription>
               </DialogHeader>
@@ -69,15 +69,15 @@ const Header = () => {
                   <div className="flex gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">1</div>
                     <div>
-                      <p className="font-medium text-foreground">Create a Chutki Room</p>
-                      <p className="text-sm text-muted-foreground">Click "Start Chutki" to generate a unique 4-digit room code.</p>
+                      <p className="font-medium text-foreground">Create a Room</p>
+                      <p className="text-sm text-muted-foreground">Click "Start Chat" to generate a unique room code.</p>
                     </div>
                   </div>
                   <div className="flex gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">2</div>
                     <div>
                       <p className="font-medium text-foreground">Share the Code</p>
-                      <p className="text-sm text-muted-foreground">Send the 4-digit code to friends you want to chat with.</p>
+                      <p className="text-sm text-muted-foreground">Send the code to friends you want to chat with.</p>
                     </div>
                   </div>
                   <div className="flex gap-3">
@@ -115,7 +115,7 @@ const Header = () => {
                   </p>
                   <div className="bg-secondary/50 rounded-xl p-4">
                     <p className="text-sm text-muted-foreground mb-1">Email us at:</p>
-                    <p className="font-medium text-primary">hello@chutkichat.com</p>
+                    <p className="font-medium text-primary">hello@rajakirani.com</p>
                   </div>
                 </DialogDescription>
               </DialogHeader>
@@ -144,7 +144,7 @@ const Header = () => {
                       <li>Your device and browser</li>
                     </ul>
                     <p className="text-sm text-muted-foreground mt-3">Send reports to:</p>
-                    <p className="font-medium text-primary">bugs@chutkichat.com</p>
+                    <p className="font-medium text-primary">bugs@rajakirani.com</p>
                   </div>
                 </DialogDescription>
               </DialogHeader>
@@ -162,7 +162,7 @@ const Header = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>About ChutkiChat</DialogTitle>
+                <DialogTitle>About Raja Ki Rani</DialogTitle>
                 <DialogDescription>
                   Temporary, anonymous chat. No accounts, no traces.
                 </DialogDescription>

@@ -258,37 +258,36 @@ const ChatApp = () => {
 
   // Sidebar content
   const SidebarContent = () => (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* Header */}
-      <div className="p-3 sm:p-4 border-b border-border flex items-center justify-between bg-card flex-shrink-0">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <Avatar className="h-10 w-10 flex-shrink-0">
+    <div className="flex flex-col h-full overflow-hidden bg-card">
+      {/* WhatsApp-style Header */}
+      <div className="wa-header px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <Avatar className="h-10 w-10 flex-shrink-0 border-2 border-white/20">
             <AvatarImage src={profile?.avatar_url || ''} />
-            <AvatarFallback className="bg-primary text-primary-foreground">
+            <AvatarFallback className="bg-white/20 text-white">
               {profile?.display_name?.[0] || profile?.username?.[0] || 'U'}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0">
-            <p className="font-semibold text-foreground truncate">{profile?.display_name || profile?.username}</p>
-            <p className="text-xs text-muted-foreground truncate">{profile?.status}</p>
+          <div className="min-w-0 hidden sm:block">
+            <p className="font-medium text-white truncate text-sm">{profile?.display_name || profile?.username}</p>
           </div>
         </div>
-        <div className="flex items-center gap-0.5 flex-shrink-0">
+        <div className="flex items-center gap-1 flex-shrink-0">
           {isAdmin && (
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => navigate('/admin')} 
               title="Admin Panel"
-              className="h-10 w-10 active:scale-95 transition-transform"
+              className="h-10 w-10 text-white hover:bg-white/10"
             >
-              <Shield className="h-5 w-5 text-primary" />
+              <Shield className="h-5 w-5" />
             </Button>
           )}
           <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10 active:scale-95 transition-transform">
-                <UserPlus className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10">
+                <MessageCircle className="h-5 w-5" />
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -314,7 +313,7 @@ const ChatApp = () => {
                   ) : searchQuery.trim().length >= 2 ? (
                     // Show search results
                     searchResults.length > 0 ? (
-                      <div className="space-y-2">
+                      <div className="space-y-1">
                         {searchResults.map((user) => (
                           <div
                             key={user.id}
@@ -322,9 +321,9 @@ const ChatApp = () => {
                             onClick={() => handleStartChat(user.id)}
                           >
                             <div className="flex items-center gap-3 flex-1">
-                              <Avatar>
+                              <Avatar className="h-12 w-12">
                                 <AvatarImage src={user.avatar_url || ''} />
-                                <AvatarFallback>{user.display_name?.[0] || user.username[0]}</AvatarFallback>
+                                <AvatarFallback className="bg-primary/20 text-primary">{user.display_name?.[0] || user.username[0]}</AvatarFallback>
                               </Avatar>
                               <div>
                                 <p className="font-medium">{user.display_name || user.username}</p>
@@ -333,11 +332,12 @@ const ChatApp = () => {
                             </div>
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="ghost"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleAddContact(user.id);
                               }}
+                              className="text-primary"
                             >
                               <UserPlus className="h-4 w-4" />
                             </Button>
@@ -349,25 +349,25 @@ const ChatApp = () => {
                     )
                   ) : (
                     // Show all users by default
-                    <div className="space-y-2">
-                      <p className="text-sm text-muted-foreground mb-2">All Users</p>
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground px-3 py-2 uppercase tracking-wide">All Users</p>
                       {allUsers.length === 0 ? (
                         <p className="text-center text-muted-foreground py-4">No users available</p>
                       ) : (
                         allUsers.map((u) => (
                           <div
                             key={u.id}
-                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                            className="flex items-center justify-between p-3 hover:bg-muted cursor-pointer transition-colors"
                             onClick={() => handleStartChat(u.id)}
                           >
                             <div className="flex items-center gap-3 flex-1">
                               <div className="relative">
-                                <Avatar>
+                                <Avatar className="h-12 w-12">
                                   <AvatarImage src={u.avatar_url || ''} />
-                                  <AvatarFallback>{u.display_name?.[0] || u.username[0]}</AvatarFallback>
+                                  <AvatarFallback className="bg-primary/20 text-primary">{u.display_name?.[0] || u.username[0]}</AvatarFallback>
                                 </Avatar>
                                 {u.is_online && (
-                                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+                                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-[hsl(var(--wa-online))] rounded-full border-2 border-card" />
                                 )}
                               </div>
                               <div>
@@ -377,11 +377,12 @@ const ChatApp = () => {
                             </div>
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="ghost"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleAddContact(u.id);
                               }}
+                              className="text-primary"
                             >
                               <UserPlus className="h-4 w-4" />
                             </Button>
@@ -394,25 +395,50 @@ const ChatApp = () => {
               </div>
             </DialogContent>
           </Dialog>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsSettingsOpen(true)} 
-            className="h-10 w-10 active:scale-95 transition-transform"
-            title="Settings"
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleLogout} className="h-10 w-10 active:scale-95 transition-transform">
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10">
+                <MoreVertical className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => setIsSettingsOpen(true)}>
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </DropdownMenuItem>
+              {isAdmin && (
+                <DropdownMenuItem onClick={() => navigate('/admin')}>
+                  <Shield className="h-4 w-4 mr-2" />
+                  Admin Panel
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <LogOut className="h-4 w-4 mr-2" />
+                Log Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
       <ProfileSettings open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
 
+      {/* Search Bar */}
+      <div className="px-2 py-2 bg-card border-b border-border">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search or start new chat"
+            className="pl-10 h-9 bg-muted border-0 rounded-lg text-sm"
+            readOnly
+            onClick={() => setIsNewChatOpen(true)}
+          />
+        </div>
+      </div>
+
       {/* Conversations List */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 bg-card">
         {convsLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -423,50 +449,50 @@ const ChatApp = () => {
               <MessageCircle className="h-8 w-8 text-primary" />
             </div>
             <h3 className="font-semibold text-foreground mb-2">No Chats Yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">Start a new conversation with someone!</p>
-            <Button onClick={() => setIsNewChatOpen(true)}>
-              <UserPlus className="h-4 w-4 mr-2" />
+            <p className="text-sm text-muted-foreground mb-4">Start a new conversation!</p>
+            <Button onClick={() => setIsNewChatOpen(true)} className="bg-primary hover:bg-primary/90">
+              <MessageCircle className="h-4 w-4 mr-2" />
               New Chat
             </Button>
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div>
             {conversations.map((conv) => (
               <div
                 key={conv.id}
-                className={`flex items-center gap-3 p-3 sm:p-4 cursor-pointer hover:bg-muted/50 active:bg-muted transition-colors ${
-                  selectedConversation?.id === conv.id ? 'bg-muted' : ''
+                className={`wa-conversation-item flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-border/30 ${
+                  selectedConversation?.id === conv.id ? 'active' : ''
                 }`}
                 onClick={() => {
                   setSelectedConversation(conv);
                   setShowMobileChat(true);
                 }}
               >
-                <div className="relative">
+                <div className="relative flex-shrink-0">
                   <Avatar className="h-12 w-12">
                     <AvatarImage src={getConversationAvatar(conv) || ''} />
-                    <AvatarFallback className="bg-primary/10 text-primary">
+                    <AvatarFallback className="bg-primary/20 text-primary">
                       {conv.is_group ? <Users className="h-5 w-5" /> : getConversationName(conv)[0]}
                     </AvatarFallback>
                   </Avatar>
                   {isParticipantOnline(conv) && (
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-[hsl(var(--wa-online))] rounded-full border-2 border-card" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <p className="font-semibold text-foreground truncate">{getConversationName(conv)}</p>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                  <div className="flex justify-between items-baseline">
+                    <p className="font-medium text-foreground truncate text-[15px]">{getConversationName(conv)}</p>
+                    <span className={`text-xs ml-2 flex-shrink-0 ${conv.unread_count > 0 ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
                       {conv.last_message && formatConversationTime(conv.last_message.created_at)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mt-0.5">
                     <p className="text-sm text-muted-foreground truncate">
                       {conv.last_message?.content || 'No messages yet'}
                     </p>
                     {conv.unread_count > 0 && (
-                      <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
-                        {conv.unread_count}
+                      <span className="ml-2 bg-primary text-primary-foreground text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+                        {conv.unread_count > 99 ? '99+' : conv.unread_count}
                       </span>
                     )}
                   </div>
@@ -481,51 +507,51 @@ const ChatApp = () => {
 
   // Chat area content
   const ChatArea = () => (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden">
       {selectedConversation ? (
         <>
-          {/* Chat Header */}
-          <div className="p-3 sm:p-4 border-b border-border flex items-center justify-between bg-card flex-shrink-0">
-            <div className="flex items-center gap-2 sm:gap-3">
+          {/* WhatsApp-style Chat Header */}
+          <div className="wa-header px-2 sm:px-4 py-2 flex items-center justify-between flex-shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden h-10 w-10 active:scale-95 transition-transform"
+                className="md:hidden h-10 w-10 text-white hover:bg-white/10"
                 onClick={() => setShowMobileChat(false)}
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={getConversationAvatar(selectedConversation) || ''} />
-                  <AvatarFallback>{getConversationName(selectedConversation)[0]}</AvatarFallback>
+                  <AvatarFallback className="bg-white/20 text-white">{getConversationName(selectedConversation)[0]}</AvatarFallback>
                 </Avatar>
                 {isParticipantOnline(selectedConversation) && (
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-card" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[hsl(var(--wa-online))] rounded-full border-2 border-[hsl(var(--wa-header))]" />
                 )}
               </div>
-              <div>
-                <p className="font-semibold text-foreground">{getConversationName(selectedConversation)}</p>
-                <p className="text-xs text-muted-foreground">
-                  {isParticipantOnline(selectedConversation) ? 'Online' : 'Offline'}
+              <div className="min-w-0">
+                <p className="font-medium text-white truncate text-[15px]">{getConversationName(selectedConversation)}</p>
+                <p className="text-xs text-white/70">
+                  {isParticipantOnline(selectedConversation) ? 'online' : 'offline'}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-0.5 sm:gap-1">
-              <Button variant="ghost" size="icon" className="h-10 w-10 hidden sm:flex">
-                <Phone className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-10 w-10 hidden sm:flex">
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10 hidden sm:flex">
                 <Video className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10 hidden sm:flex">
+                <Phone className="h-5 w-5" />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10">
                     <MoreVertical className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => setClearConfirmOpen(true)} className="text-destructive focus:text-destructive">
+                  <DropdownMenuItem onClick={() => setClearConfirmOpen(true)}>
                     <Eraser className="h-4 w-4 mr-2" />
                     Clear Chat
                   </DropdownMenuItem>
@@ -556,76 +582,75 @@ const ChatApp = () => {
             </div>
           </div>
 
-          {/* Messages */}
-          <ScrollArea className="flex-1 p-4">
-            {msgsLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
-            ) : messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                  <MessageCircle className="h-8 w-8 text-primary" />
+          {/* Messages with WhatsApp background */}
+          <ScrollArea className="flex-1 wa-chat-bg">
+            <div className="p-3 sm:p-4">
+              {msgsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
-                <p className="text-muted-foreground">No messages yet. Say hi!</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((msg) => {
-                  const isOwn = msg.sender_id === user?.id;
-                  return (
-                    <DropdownMenu key={msg.id}>
-                      <DropdownMenuTrigger asChild>
-                        <div
-                          className={`flex ${isOwn ? 'justify-end' : 'justify-start'} cursor-pointer`}
-                        >
+              ) : messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full py-16 text-center">
+                  <div className="bg-card/80 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm">
+                    <p className="text-muted-foreground text-sm">No messages yet. Say hi! 👋</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {messages.map((msg) => {
+                    const isOwn = msg.sender_id === user?.id;
+                    return (
+                      <DropdownMenu key={msg.id}>
+                        <DropdownMenuTrigger asChild>
                           <div
-                            className={`max-w-[75%] rounded-2xl px-4 py-2 ${
-                              isOwn
-                                ? 'bg-primary text-primary-foreground rounded-br-md'
-                                : 'bg-muted text-foreground rounded-bl-md'
-                            } hover:opacity-90 transition-opacity`}
+                            className={`flex ${isOwn ? 'justify-end' : 'justify-start'} cursor-pointer mb-1`}
                           >
-                            <p className="break-words">{msg.content}</p>
-                            <div className={`flex items-center gap-1 mt-1 ${isOwn ? 'justify-end' : ''}`}>
-                              <span className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                                {formatMessageTime(msg.created_at)}
-                              </span>
-                              {isOwn && (
-                                msg.is_read ? (
-                                  <CheckCheck className="h-3 w-3 text-blue-300" />
-                                ) : (
-                                  <Check className="h-3 w-3 text-primary-foreground/70" />
-                                )
-                              )}
+                            <div
+                              className={`max-w-[85%] sm:max-w-[70%] px-3 py-1.5 ${
+                                isOwn ? 'wa-bubble-sent mr-2' : 'wa-bubble-received ml-2'
+                              }`}
+                            >
+                              <p className="break-words text-[14.5px] leading-relaxed">{msg.content}</p>
+                              <div className={`flex items-center gap-1 mt-0.5 ${isOwn ? 'justify-end' : ''}`}>
+                                <span className="text-[11px] text-muted-foreground">
+                                  {formatMessageTime(msg.created_at)}
+                                </span>
+                                {isOwn && (
+                                  msg.is_read ? (
+                                    <CheckCheck className="h-4 w-4 text-[hsl(var(--wa-read))]" />
+                                  ) : (
+                                    <CheckCheck className="h-4 w-4 text-muted-foreground" />
+                                  )
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </DropdownMenuTrigger>
-                      {isOwn && (
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem 
-                            onClick={() => {
-                              setSelectedMessageId(msg.id);
-                              handleDeleteMessage();
-                            }}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete Message
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      )}
-                    </DropdownMenu>
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </div>
-            )}
+                        </DropdownMenuTrigger>
+                        {isOwn && (
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem 
+                              onClick={() => {
+                                setSelectedMessageId(msg.id);
+                                handleDeleteMessage();
+                              }}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete Message
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        )}
+                      </DropdownMenu>
+                    );
+                  })}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </div>
           </ScrollArea>
 
-          {/* Message Input */}
-          <div className="p-3 sm:p-4 border-t border-border bg-card safe-area-inset-bottom flex-shrink-0">
+          {/* WhatsApp-style Message Input */}
+          <div className="wa-input-area px-2 py-2 safe-area-inset-bottom flex-shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -633,20 +658,22 @@ const ChatApp = () => {
               }}
               className="flex items-center gap-2"
             >
-              <Input
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 h-11 text-base"
-                autoComplete="off"
-                autoCorrect="off"
-                enterKeyHint="send"
-              />
+              <div className="flex-1 bg-card rounded-full flex items-center px-4 shadow-sm">
+                <Input
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  placeholder="Type a message"
+                  className="flex-1 h-10 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-[15px]"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  enterKeyHint="send"
+                />
+              </div>
               <Button 
                 type="submit" 
                 size="icon" 
                 disabled={!messageInput.trim()}
-                className="h-11 w-11 flex-shrink-0 active:scale-95 transition-transform"
+                className="h-11 w-11 rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 shadow-sm"
               >
                 <Send className="h-5 w-5" />
               </Button>
@@ -654,14 +681,16 @@ const ChatApp = () => {
           </div>
         </>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-            <MessageCircle className="h-12 w-12 text-primary" />
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center wa-chat-bg">
+          <div className="bg-card/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-md">
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
+              <MessageCircle className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">ChutkiiChat</h2>
+            <p className="text-muted-foreground text-sm">
+              Select a chat or start a new conversation
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Welcome to ChutkiiChat</h2>
-          <p className="text-muted-foreground max-w-md">
-            Select a conversation from the sidebar or start a new chat to begin messaging.
-          </p>
         </div>
       )}
     </div>
@@ -673,7 +702,7 @@ const ChatApp = () => {
     <>
       <div className="app-viewport flex bg-background overflow-hidden">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex w-80 lg:w-96 border-r border-border flex-col bg-card flex-shrink-0">
+        <div className="hidden md:flex w-[30%] min-w-[300px] max-w-[400px] flex-col bg-card wa-sidebar flex-shrink-0">
           <SidebarContent />
         </div>
 

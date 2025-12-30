@@ -50,6 +50,9 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          file_name: string | null
+          file_type: string | null
+          file_url: string | null
           id: string
           is_system: boolean | null
           sender: string
@@ -58,6 +61,9 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          file_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
           id?: string
           is_system?: boolean | null
           sender: string
@@ -66,6 +72,9 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          file_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
           id?: string
           is_system?: boolean | null
           sender?: string

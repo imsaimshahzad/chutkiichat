@@ -111,12 +111,36 @@ const Header = () => {
                 <DialogTitle className="text-gradient-chutki text-xl">Contact Us</DialogTitle>
                 <DialogDescription className="pt-4 text-foreground/80">
                   <p className="mb-4">
-                    Have questions, feedback, or just want to say hi?
+                    Have a question, or facing an issue? Reach us directly:
                   </p>
-                  <div className="bg-secondary/50 rounded-xl p-4">
-                    <p className="text-sm text-muted-foreground mb-1">Email us at:</p>
-                    <p className="font-medium text-primary">hello@chutkichat.com</p>
+                  <div className="bg-secondary/50 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">📩</span>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Email:</p>
+                        <a href="mailto:imshahzad2244@gmail.com" className="font-medium text-primary hover:underline">
+                          imshahzad2244@gmail.com
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">📱</span>
+                      <div>
+                        <p className="text-sm text-muted-foreground">WhatsApp:</p>
+                        <a 
+                          href="https://wa.me/923478018040" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="font-medium text-primary hover:underline"
+                        >
+                          0347 8018040
+                        </a>
+                      </div>
+                    </div>
                   </div>
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    We usually reply within 24 hours!
+                  </p>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>

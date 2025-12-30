@@ -290,9 +290,9 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-background">
+    <div className="flex flex-col h-[100dvh] liquid-bg">
       {/* Header */}
-      <header className="bg-card border-b border-border px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shadow-sm shrink-0">
+      <header className="liquid-glass px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shrink-0 rounded-none">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -303,13 +303,13 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
         </Button>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-md shadow-primary/30">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>
           <div className="text-center">
             <p className="text-[10px] sm:text-xs text-muted-foreground">Chutkii Room</p>
             <div className="flex items-center gap-1 sm:gap-2">
-              <span className="font-mono font-bold text-gradient-chutki tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
+              <span className="font-mono font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
                 {sessionCode}
               </span>
               <Button 
@@ -435,7 +435,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </div>
 
       {/* Input */}
-      <div className="p-3 sm:p-4 bg-card border-t border-border shrink-0 safe-area-inset-bottom">
+      <div className="p-3 sm:p-4 liquid-glass shrink-0 safe-area-inset-bottom rounded-none">
         <div className="flex items-center gap-2 mb-2 sm:mb-3">
           <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
           <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>

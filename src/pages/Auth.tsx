@@ -150,18 +150,18 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-gradient-to-br from-background via-secondary/20 to-background safe-area-inset-bottom">
+    <div className="min-h-[100dvh] flex items-center justify-center p-4 liquid-bg safe-area-inset-bottom">
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/10 mb-3 sm:mb-4">
-            <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 mb-3 sm:mb-4 shadow-lg shadow-primary/30">
+            <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gradient-chutki">ChutkiiChat</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">ChutkiiChat</h1>
           <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">Chat in Chutkii, Stay Forever!</p>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
+        <Card className="liquid-glass-card border-0 shadow-none">
           <Tabs defaultValue="login" className="w-full">
             <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
               <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11">

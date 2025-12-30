@@ -64,8 +64,8 @@ const Room = () => {
 
   if (isLoading || error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
-        <div className="text-center space-y-4">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 liquid-bg">
+        <div className="liquid-glass-card rounded-3xl p-8 text-center space-y-4">
           {error ? (
             <>
               <div className="w-16 h-16 mx-auto rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
@@ -77,9 +77,9 @@ const Room = () => {
           ) : (
             <>
               <div className="relative">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                  <MessageCircle className="w-10 h-10 text-white" />
-                  <Zap className="w-5 h-5 text-yellow-400 absolute -top-1 -right-1 animate-sparkle" />
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/30">
+                  <MessageCircle className="w-10 h-10 text-primary-foreground" />
+                  <Zap className="w-5 h-5 text-accent absolute -top-1 -right-1 animate-sparkle" />
                 </div>
               </div>
               <div className="flex items-center gap-2 justify-center">

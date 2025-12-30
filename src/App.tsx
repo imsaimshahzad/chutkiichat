@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Room from "./pages/Room";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import ChatApp from "./pages/ChatApp";
 import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
@@ -25,6 +26,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/chat" element={<ChatApp />} />
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/room/:id" element={<Room />} />

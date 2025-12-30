@@ -31,7 +31,7 @@ const Room = () => {
       
       if (!exists) {
         setError("Room not found");
-        toast.error("This Chutki room doesn't exist. Redirecting...");
+        toast.error("This Chutkii room doesn't exist. Redirecting...");
         setTimeout(() => navigate("/"), 2000);
         return;
       }
@@ -52,6 +52,14 @@ const Room = () => {
       sessionStorage.removeItem(`room-${id}-user`);
     }
     navigate("/");
+  };
+
+  const handleNameChange = (newName: string) => {
+    if (id && newName.trim()) {
+      sessionStorage.setItem(`room-${id}-user`, newName.trim());
+      setUserName(newName.trim());
+      toast.success(`Name changed to ${newName.trim()}`);
+    }
   };
 
   if (isLoading || error) {
@@ -79,7 +87,7 @@ const Room = () => {
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
-              <p className="text-muted-foreground font-medium">Joining Chutki room...</p>
+              <p className="text-muted-foreground font-medium">Joining Chutkii room...</p>
             </>
           )}
         </div>
@@ -96,6 +104,7 @@ const Room = () => {
       sessionCode={id}
       userName={userName}
       onLeave={handleLeave}
+      onNameChange={handleNameChange}
     />
   );
 };

@@ -95,10 +95,18 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const MAX_MESSAGE_LENGTH = 5000;
+
   const handleSend = async () => {
     if (!newMessage.trim()) return;
 
     const content = newMessage.trim();
+    
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      toast.error(`Message too long (max ${MAX_MESSAGE_LENGTH} characters)`);
+      return;
+    }
+    
     setNewMessage("");
     stopTyping();
     
@@ -245,6 +253,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
               }
             }}
             onKeyDown={handleKeyDown}
+            maxLength={5000}
             className="flex-1 h-12 rounded-xl border-border focus:border-primary"
           />
           <Button 

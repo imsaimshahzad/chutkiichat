@@ -14,8 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        sans: ['Segoe UI', 'Helvetica Neue', 'Helvetica', 'Lucida Grande', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,10 +50,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        chutki: {
-          blue: "hsl(var(--chutki-blue))",
-          dark: "hsl(var(--chutki-blue-dark))",
-          light: "hsl(var(--chutki-blue-light))",
+        wa: {
+          header: "hsl(var(--wa-header))",
+          sent: "hsl(var(--wa-sent-bubble))",
+          received: "hsl(var(--wa-received-bubble))",
+          online: "hsl(var(--wa-online))",
+          read: "hsl(var(--wa-read))",
         },
       },
       borderRadius: {

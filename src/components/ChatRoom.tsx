@@ -6,6 +6,7 @@ import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
+import { useMessageReactions } from "@/hooks/useMessageReactions";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { useTheme } from "next-themes";
 import {
@@ -13,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import MessageReactionsComponent from "./MessageReactions";
 
 interface ChatRoomProps {
   sessionCode: string;
@@ -28,6 +30,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
+  const { reactions, toggleReaction } = useMessageReactions(sessionCode, userName);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -204,27 +207,38 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.isOwn ? "justify-end" : "justify-start"} animate-fade-in`}
+            className={`flex ${message.isOwn ? "justify-end" : "justify-start"} animate-fade-in group`}
           >
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                message.isSystem
-                  ? "bg-muted text-muted-foreground text-center text-sm mx-auto rounded-xl"
-                  : message.isOwn
-                  ? "bg-gradient-to-br from-primary to-accent text-white rounded-br-md shadow-md"
-                  : "bg-card border border-border rounded-bl-md shadow-sm"
-              }`}
-            >
-              {!message.isSystem && !message.isOwn && (
-                <p className="text-xs text-primary font-semibold mb-1">
-                  {message.sender}
-                </p>
-              )}
-              <p className="break-words">{message.content}</p>
+            <div className="max-w-[80%]">
+              <div
+                className={`rounded-2xl px-4 py-3 ${
+                  message.isSystem
+                    ? "bg-muted text-muted-foreground text-center text-sm mx-auto rounded-xl"
+                    : message.isOwn
+                    ? "bg-gradient-to-br from-primary to-accent text-white rounded-br-md shadow-md"
+                    : "bg-card border border-border rounded-bl-md shadow-sm"
+                }`}
+              >
+                {!message.isSystem && !message.isOwn && (
+                  <p className="text-xs text-primary font-semibold mb-1">
+                    {message.sender}
+                  </p>
+                )}
+                <p className="break-words">{message.content}</p>
+                {!message.isSystem && (
+                  <p className={`text-xs mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
+                    {formatTime(message.timestamp)}
+                  </p>
+                )}
+              </div>
               {!message.isSystem && (
-                <p className={`text-xs mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
-                  {formatTime(message.timestamp)}
-                </p>
+                <MessageReactionsComponent
+                  messageId={message.id}
+                  reactions={reactions[message.id] || []}
+                  userName={userName}
+                  onToggleReaction={toggleReaction}
+                  isOwn={message.isOwn || false}
+                />
               )}
             </div>
           </div>

@@ -11,9 +11,9 @@ const JoinSession = () => {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCharPress = (char: string) => {
-    if (code.length < 6) {
-      setCode((prev) => prev + char);
+  const handleNumberPress = (num: string) => {
+    if (code.length < 4) {
+      setCode((prev) => prev + num);
     }
   };
 
@@ -22,10 +22,10 @@ const JoinSession = () => {
   };
 
   const handleJoin = async () => {
-    const trimmedCode = code.trim().toUpperCase();
+    const trimmedCode = code.trim();
     
-    if (trimmedCode.length !== 6) {
-      toast.error("Please enter a 6-character code");
+    if (trimmedCode.length !== 4) {
+      toast.error("Please enter a 4-digit code");
       return;
     }
 
@@ -53,18 +53,18 @@ const JoinSession = () => {
           <Users className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-foreground">Join a Room</h2>
-          <p className="text-sm text-muted-foreground">Enter a room code</p>
+          <h2 className="text-xl font-bold text-foreground">Join a Chutki Room</h2>
+          <p className="text-sm text-muted-foreground">Enter a 4-digit room code</p>
         </div>
       </div>
 
       <div className="space-y-4">
         {/* Code Display */}
-        <div className="flex justify-center gap-2">
-          {[0, 1, 2, 3, 4, 5].map((i) => (
+        <div className="flex justify-center gap-3">
+          {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`w-12 h-14 flex items-center justify-center rounded-xl text-2xl font-bold font-mono transition-all duration-200 border-2 ${
+              className={`w-16 h-20 flex items-center justify-center rounded-2xl text-3xl font-bold font-mono transition-all duration-200 border-2 ${
                 code[i]
                   ? "bg-primary/10 text-primary border-primary shadow-md"
                   : "bg-muted/50 text-muted-foreground border-border"
@@ -75,38 +75,45 @@ const JoinSession = () => {
           ))}
         </div>
 
-        {/* Character Pad - Numbers and Letters */}
-        <div className="grid grid-cols-6 gap-1.5">
-          {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9'].map((char) => (
+        {/* Number Pad */}
+        <div className="grid grid-cols-3 gap-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <Button
-              key={char}
+              key={num}
               variant="secondary"
-              className="h-10 text-sm font-semibold rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
-              onClick={() => handleCharPress(char)}
+              className="h-14 text-xl font-semibold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+              onClick={() => handleNumberPress(num.toString())}
             >
-              {char}
+              {num}
             </Button>
           ))}
           <Button
             variant="secondary"
-            className="h-10 text-sm font-semibold rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors col-span-2"
+            className="h-14 text-xl font-semibold rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors"
             onClick={() => setCode("")}
           >
-            Clear
+            C
           </Button>
           <Button
             variant="secondary"
-            className="h-10 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors col-span-2"
+            className="h-14 text-xl font-semibold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+            onClick={() => handleNumberPress("0")}
+          >
+            0
+          </Button>
+          <Button
+            variant="secondary"
+            className="h-14 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors"
             onClick={handleDelete}
           >
-            <Delete className="w-5 h-5" />
+            <Delete className="w-6 h-6" />
           </Button>
         </div>
 
         <Button 
           className="w-full h-14 rounded-2xl bg-gradient-to-r from-accent to-primary hover:opacity-90 text-white font-semibold text-lg shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
           onClick={handleJoin}
-          disabled={code.length !== 6 || isLoading}
+          disabled={code.length !== 4 || isLoading}
         >
           {isLoading ? (
             <>
@@ -115,7 +122,7 @@ const JoinSession = () => {
             </>
           ) : (
             <>
-              Join Room
+              Join Chutki
               <ArrowRight className="w-5 h-5" />
             </>
           )}

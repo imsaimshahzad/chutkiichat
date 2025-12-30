@@ -36,6 +36,9 @@
 
     --radius: 1rem;
 
+    /* Visual viewport height (updated at runtime for mobile keyboards) */
+    --app-height: 100vh;
+
     /* ChutkiChat custom tokens */
     --chutki-blue: 209 100% 65%;
     --chutki-blue-dark: 209 100% 50%;
@@ -96,8 +99,6 @@
   html {
     /* Support for iOS safe areas */
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    /* Prevent scroll on keyboard open */
-    overflow: hidden;
     height: 100%;
   }
 
@@ -105,22 +106,20 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Poppins', sans-serif;
     background: var(--chutki-gradient-soft);
-    min-height: 100dvh;
-    height: 100%;
-    overflow: hidden;
+    min-height: 100%;
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Prevent iOS bounce scroll */
-    overscroll-behavior: none;
-    position: fixed;
-    width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   #root {
-    height: 100%;
-    overflow: auto;
-    overscroll-behavior: contain;
+    min-height: 100%;
+  }
+
+  .app-viewport {
+    height: var(--app-height);
   }
 
   .font-body {

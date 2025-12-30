@@ -148,59 +148,59 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-[100dvh] bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-border p-4 flex items-center justify-between animate-slide-up shadow-sm">
+      <header className="bg-card border-b border-border px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shadow-sm shrink-0">
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={onLeave}
-          className="hover:bg-destructive/10 hover:text-destructive"
+          className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
 
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <MessageCircle className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div className="text-center">
-            <p className="text-xs text-muted-foreground">Chutkii Room</p>
-            <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-gradient-chutki tracking-[0.2em] text-lg">
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Chutkii Room</p>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className="font-mono font-bold text-gradient-chutki tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
                 {sessionCode}
               </span>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-7 w-7 hover:bg-primary/10"
+                className="h-6 w-6 sm:h-7 sm:w-7 hover:bg-primary/10"
                 onClick={handleCopyCode}
               >
                 {copied ? (
-                  <Check className="w-4 h-4 text-green-500" />
+                  <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                 ) : (
-                  <Copy className="w-4 h-4 text-primary" />
+                  <Copy className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
                 )}
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-green-700">
-          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-sm font-medium">Live</span>
+        <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-green-100 text-green-700">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse" />
+          <span className="text-xs sm:text-sm font-medium">Live</span>
         </div>
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 overscroll-contain">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-              <MessageCircle className="w-8 h-8 text-primary" />
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground px-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
+              <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
             </div>
-            <p className="font-medium">No messages yet</p>
-            <p className="text-sm">Start the conversation!</p>
+            <p className="font-medium text-sm sm:text-base">No messages yet</p>
+            <p className="text-xs sm:text-sm">Start the conversation!</p>
           </div>
         )}
         
@@ -209,24 +209,24 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
             key={message.id}
             className={`flex ${message.isOwn ? "justify-end" : "justify-start"} animate-fade-in group`}
           >
-            <div className="max-w-[80%]">
+            <div className="max-w-[85%] sm:max-w-[80%]">
               <div
-                className={`rounded-2xl px-4 py-3 ${
+                className={`rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-3 ${
                   message.isSystem
-                    ? "bg-muted text-muted-foreground text-center text-sm mx-auto rounded-xl"
+                    ? "bg-muted text-muted-foreground text-center text-xs sm:text-sm mx-auto rounded-lg sm:rounded-xl"
                     : message.isOwn
-                    ? "bg-gradient-to-br from-primary to-accent text-white rounded-br-md shadow-md"
-                    : "bg-card border border-border rounded-bl-md shadow-sm"
+                    ? "bg-gradient-to-br from-primary to-accent text-white rounded-br-sm sm:rounded-br-md shadow-md"
+                    : "bg-card border border-border rounded-bl-sm sm:rounded-bl-md shadow-sm"
                 }`}
               >
                 {!message.isSystem && !message.isOwn && (
-                  <p className="text-xs text-primary font-semibold mb-1">
+                  <p className="text-[10px] sm:text-xs text-primary font-semibold mb-0.5 sm:mb-1">
                     {message.sender}
                   </p>
                 )}
-                <p className="break-words">{message.content}</p>
+                <p className="break-words text-sm sm:text-base">{message.content}</p>
                 {!message.isSystem && (
-                  <p className={`text-xs mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
+                  <p className={`text-[10px] sm:text-xs mt-0.5 sm:mt-1 ${message.isOwn ? "text-white/70" : "text-muted-foreground"}`}>
                     {formatTime(message.timestamp)}
                   </p>
                 )}
@@ -247,14 +247,14 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
         {/* Typing Indicator */}
         {typingText && (
           <div className="flex justify-start animate-fade-in">
-            <div className="bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+            <div className="bg-card border border-border rounded-xl sm:rounded-2xl rounded-bl-sm sm:rounded-bl-md px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
-                <span className="text-sm text-muted-foreground">{typingText}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">{typingText}</span>
               </div>
             </div>
           </div>
@@ -264,20 +264,20 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
       </div>
 
       {/* Input */}
-      <div className="p-4 bg-card border-t border-border">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xs text-muted-foreground">Chatting as</span>
-          <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{userName}</span>
+      <div className="p-3 sm:p-4 bg-card border-t border-border shrink-0 safe-area-inset-bottom">
+        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+          <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 rounded-full truncate max-w-[120px] sm:max-w-none">{userName}</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-xl hover:bg-primary/10"
+                className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl hover:bg-primary/10 shrink-0"
               >
-                <Smile className="w-5 h-5 text-muted-foreground" />
+                <Smile className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
               </Button>
             </PopoverTrigger>
             <PopoverContent 
@@ -288,8 +288,8 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
               <EmojiPicker 
                 onEmojiClick={handleEmojiClick}
                 theme={theme === "dark" ? Theme.DARK : Theme.LIGHT}
-                width={320}
-                height={400}
+                width={280}
+                height={350}
               />
             </PopoverContent>
           </Popover>
@@ -305,14 +305,14 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
             }}
             onKeyDown={handleKeyDown}
             maxLength={5000}
-            className="flex-1 h-12 rounded-xl border-border focus:border-primary"
+            className="flex-1 h-10 sm:h-12 rounded-lg sm:rounded-xl border-border focus:border-primary text-sm sm:text-base"
           />
           <Button 
             onClick={handleSend}
             disabled={!newMessage.trim()}
-            className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50"
+            className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50 shrink-0 active:scale-95"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
         </div>
       </div>

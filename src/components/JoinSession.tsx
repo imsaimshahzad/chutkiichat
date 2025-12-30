@@ -48,23 +48,23 @@ const JoinSession = () => {
 
   return (
     <SessionCard delay={200}>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-md">
-          <Users className="w-7 h-7 text-white" />
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-md shrink-0">
+          <Users className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
         </div>
-        <div>
-          <h2 className="text-xl font-bold text-foreground">Join a Chutkii Room</h2>
-          <p className="text-sm text-muted-foreground">Enter a 4-digit room code</p>
+        <div className="min-w-0">
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Chutkii Room</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">Enter a 4-digit room code</p>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {/* Code Display */}
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center gap-2 sm:gap-3">
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`w-16 h-20 flex items-center justify-center rounded-2xl text-3xl font-bold font-mono transition-all duration-200 border-2 ${
+              className={`w-12 h-16 sm:w-16 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl text-2xl sm:text-3xl font-bold font-mono transition-all duration-200 border-2 ${
                 code[i]
                   ? "bg-primary/10 text-primary border-primary shadow-md"
                   : "bg-muted/50 text-muted-foreground border-border"
@@ -76,12 +76,12 @@ const JoinSession = () => {
         </div>
 
         {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <Button
               key={num}
               variant="secondary"
-              className="h-14 text-xl font-semibold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+              className="h-11 sm:h-14 text-lg sm:text-xl font-semibold rounded-lg sm:rounded-xl hover:bg-primary/10 hover:text-primary transition-colors active:scale-95"
               onClick={() => handleNumberPress(num.toString())}
             >
               {num}
@@ -89,29 +89,29 @@ const JoinSession = () => {
           ))}
           <Button
             variant="secondary"
-            className="h-14 text-xl font-semibold rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors"
+            className="h-11 sm:h-14 text-lg sm:text-xl font-semibold rounded-lg sm:rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors active:scale-95"
             onClick={() => setCode("")}
           >
             C
           </Button>
           <Button
             variant="secondary"
-            className="h-14 text-xl font-semibold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+            className="h-11 sm:h-14 text-lg sm:text-xl font-semibold rounded-lg sm:rounded-xl hover:bg-primary/10 hover:text-primary transition-colors active:scale-95"
             onClick={() => handleNumberPress("0")}
           >
             0
           </Button>
           <Button
             variant="secondary"
-            className="h-14 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors"
+            className="h-11 sm:h-14 rounded-lg sm:rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors active:scale-95"
             onClick={handleDelete}
           >
-            <Delete className="w-6 h-6" />
+            <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
           </Button>
         </div>
 
         <Button 
-          className="w-full h-14 rounded-2xl bg-gradient-to-r from-accent to-primary hover:opacity-90 text-white font-semibold text-lg shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-accent to-primary hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
           onClick={handleJoin}
           disabled={code.length !== 4 || isLoading}
         >

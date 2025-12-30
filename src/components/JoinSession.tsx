@@ -75,8 +75,8 @@ const JoinSession = () => {
   return (
     <SessionCard delay={200}>
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-md shrink-0">
-          <Users className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
+          <Users className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
         </div>
         <div className="min-w-0">
           <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Chutkii Room</h2>
@@ -92,8 +92,8 @@ const JoinSession = () => {
               key={i}
               className={`w-12 h-16 sm:w-16 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl text-2xl sm:text-3xl font-bold font-mono transition-all duration-200 border-2 ${
                 code[i]
-                  ? "bg-primary/10 text-primary border-primary shadow-md"
-                  : "bg-muted/50 text-muted-foreground border-border"
+                  ? "bg-primary/10 text-primary border-primary shadow-lg shadow-primary/20"
+                  : "bg-muted/30 text-muted-foreground border-border/50"
               }`}
             >
               {code[i] || ""}
@@ -141,7 +141,7 @@ const JoinSession = () => {
 
         {/* Name Section - shows when code is complete */}
         {showNameSection && code.length === 4 && (
-          <div className="text-center py-2 sm:py-3 bg-muted/50 rounded-lg sm:rounded-xl animate-fade-in">
+          <div className="text-center py-2 sm:py-3 bg-muted/30 border border-border/50 rounded-lg sm:rounded-xl animate-fade-in">
             <p className="text-xs text-muted-foreground mb-0.5 sm:mb-1">You'll join as</p>
             <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
               <DialogTrigger asChild>
@@ -177,7 +177,7 @@ const JoinSession = () => {
                       Cancel
                     </Button>
                     <Button 
-                      className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
+                      className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20"
                       onClick={handleNameSave}
                     >
                       Save
@@ -190,7 +190,7 @@ const JoinSession = () => {
         )}
 
         <Button 
-          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-accent to-primary hover:opacity-90 text-white font-semibold text-base sm:text-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary/80 to-primary hover:from-primary/70 hover:to-primary/90 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
           onClick={handleJoin}
           disabled={code.length !== 4 || isLoading}
         >

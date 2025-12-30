@@ -54,16 +54,19 @@ export type Database = {
           code: string
           created_at: string
           id: string
+          last_activity_at: string
         }
         Insert: {
           code: string
           created_at?: string
           id?: string
+          last_activity_at?: string
         }
         Update: {
           code?: string
           created_at?: string
           id?: string
+          last_activity_at?: string
         }
         Relationships: []
       }
@@ -72,7 +75,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_sessions: { Args: never; Returns: number }
     }
     Enums: {
       [_ in never]: never

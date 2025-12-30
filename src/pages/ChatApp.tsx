@@ -135,30 +135,36 @@ const ChatApp = () => {
 
   // Sidebar content
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-border flex items-center justify-between bg-card">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
+      <div className="p-3 sm:p-4 border-b border-border flex items-center justify-between bg-card flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <Avatar className="h-10 w-10 flex-shrink-0">
             <AvatarImage src={profile?.avatar_url || ''} />
             <AvatarFallback className="bg-primary text-primary-foreground">
               {profile?.display_name?.[0] || profile?.username?.[0] || 'U'}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <p className="font-semibold text-foreground">{profile?.display_name || profile?.username}</p>
-            <p className="text-xs text-muted-foreground">{profile?.status}</p>
+          <div className="min-w-0">
+            <p className="font-semibold text-foreground truncate">{profile?.display_name || profile?.username}</p>
+            <p className="text-xs text-muted-foreground truncate">{profile?.status}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 flex-shrink-0">
           {isAdmin && (
-            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} title="Admin Panel">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => navigate('/admin')} 
+              title="Admin Panel"
+              className="h-10 w-10 active:scale-95 transition-transform"
+            >
               <Shield className="h-5 w-5 text-primary" />
             </Button>
           )}
           <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="h-10 w-10 active:scale-95 transition-transform">
                 <UserPlus className="h-5 w-5" />
               </Button>
             </DialogTrigger>
@@ -243,7 +249,7 @@ const ChatApp = () => {
               </div>
             </DialogContent>
           </Dialog>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
+          <Button variant="ghost" size="icon" onClick={handleLogout} className="h-10 w-10 active:scale-95 transition-transform">
             <LogOut className="h-5 w-5" />
           </Button>
         </div>
@@ -272,7 +278,7 @@ const ChatApp = () => {
             {conversations.map((conv) => (
               <div
                 key={conv.id}
-                className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
+                className={`flex items-center gap-3 p-3 sm:p-4 cursor-pointer hover:bg-muted/50 active:bg-muted transition-colors ${
                   selectedConversation?.id === conv.id ? 'bg-muted' : ''
                 }`}
                 onClick={() => {
@@ -319,16 +325,16 @@ const ChatApp = () => {
 
   // Chat area content
   const ChatArea = () => (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-background overflow-hidden">
       {selectedConversation ? (
         <>
           {/* Chat Header */}
-          <div className="p-4 border-b border-border flex items-center justify-between bg-card">
-            <div className="flex items-center gap-3">
+          <div className="p-3 sm:p-4 border-b border-border flex items-center justify-between bg-card flex-shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden"
+                className="md:hidden h-10 w-10 active:scale-95 transition-transform"
                 onClick={() => setShowMobileChat(false)}
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -349,14 +355,14 @@ const ChatApp = () => {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon">
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hidden sm:flex">
                 <Phone className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hidden sm:flex">
                 <Video className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="h-10 w-10">
                 <MoreVertical className="h-5 w-5" />
               </Button>
             </div>
@@ -414,7 +420,7 @@ const ChatApp = () => {
           </ScrollArea>
 
           {/* Message Input */}
-          <div className="p-4 border-t border-border bg-card">
+          <div className="p-3 sm:p-4 border-t border-border bg-card safe-area-inset-bottom">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -426,9 +432,14 @@ const ChatApp = () => {
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1"
+                className="flex-1 h-11 text-base"
               />
-              <Button type="submit" size="icon" disabled={!messageInput.trim()}>
+              <Button 
+                type="submit" 
+                size="icon" 
+                disabled={!messageInput.trim()}
+                className="h-11 w-11 flex-shrink-0 active:scale-95 transition-transform"
+              >
                 <Send className="h-5 w-5" />
               </Button>
             </form>
@@ -451,26 +462,26 @@ const ChatApp = () => {
   if (!user) return null;
 
   return (
-    <div className="h-screen flex bg-background">
+    <div className="h-[100dvh] flex bg-background overflow-hidden">
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex w-80 lg:w-96 border-r border-border flex-col bg-card">
+      <div className="hidden md:flex w-80 lg:w-96 border-r border-border flex-col bg-card flex-shrink-0">
         <SidebarContent />
       </div>
 
       {/* Mobile Sidebar */}
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetContent side="left" className="p-0 w-80">
+        <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
           <SidebarContent />
         </SheetContent>
       </Sheet>
 
       {/* Chat Area */}
-      <div className={`flex-1 flex flex-col ${showMobileChat ? '' : 'hidden md:flex'}`}>
+      <div className={`flex-1 flex flex-col min-w-0 ${showMobileChat ? '' : 'hidden md:flex'}`}>
         <ChatArea />
       </div>
 
       {/* Mobile: Show conversations list when no chat selected */}
-      <div className={`flex-1 flex-col md:hidden ${!showMobileChat ? 'flex' : 'hidden'}`}>
+      <div className={`flex-1 flex-col md:hidden min-w-0 ${!showMobileChat ? 'flex' : 'hidden'}`}>
         <SidebarContent />
       </div>
     </div>

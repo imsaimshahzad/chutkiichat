@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Header = () => {
   return (
@@ -197,10 +198,13 @@ const Header = () => {
               </DialogHeader>
             </DialogContent>
           </Dialog>
+
+          <ThemeToggle />
         </nav>
 
         {/* Mobile menu */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-1">
+          <ThemeToggle />
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="ghost" size="icon">

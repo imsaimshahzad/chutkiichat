@@ -354,37 +354,13 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                       {formatTime(message.timestamp)}
                     </p>
                     {message.isOwn && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex">
-                              {(() => {
-                                const readers = getReadersForMessage(message.id, message.sender);
-                                return readers.length > 0 ? (
-                                  <CheckCheck className="w-3 h-3 text-blue-300" />
-                                ) : (
-                                  <Check className="w-3 h-3 text-white/70" />
-                                );
-                              })()}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="left" className="max-w-[150px]">
-                            {(() => {
-                              const readers = getReadersForMessage(message.id, message.sender);
-                              return readers.length > 0 ? (
-                                <div>
-                                  <p className="text-xs font-semibold mb-1">Seen by</p>
-                                  {readers.map((reader, idx) => (
-                                    <p key={idx} className="text-xs text-muted-foreground">{reader}</p>
-                                  ))}
-                                </div>
-                              ) : (
-                                <p className="text-xs">Sent</p>
-                              );
-                            })()}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <span className="inline-flex">
+                        {getReadersForMessage(message.id, message.sender).length > 0 ? (
+                          <CheckCheck className="w-3 h-3 text-blue-300" />
+                        ) : (
+                          <Check className="w-3 h-3 text-white/70" />
+                        )}
+                      </span>
                     )}
                   </div>
                 )}

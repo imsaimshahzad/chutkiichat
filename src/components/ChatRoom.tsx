@@ -1,11 +1,18 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, Users, MessageCircle, Zap } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import { useTheme } from "next-themes";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface ChatRoomProps {
   sessionCode: string;
@@ -17,9 +24,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [copied, setCopied] = useState(false);
+  const [emojiOpen, setEmojiOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
+  const { theme } = useTheme();
 
   useEffect(() => {
     console.log('ChatRoom mounted for session:', sessionCode, 'user:', userName);
@@ -128,6 +137,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
     setCopied(true);
     toast.success("Code copied!");
     setTimeout(() => setCopied(false), 2000);
+  };
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setNewMessage(prev => prev + emojiData.emoji);
+    setEmojiOpen(false);
+    inputRef.current?.focus();
   };
 
   return (
@@ -241,7 +255,30 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
           <span className="text-xs text-muted-foreground">Chatting as</span>
           <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{userName}</span>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
+          <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-12 w-12 rounded-xl hover:bg-primary/10"
+              >
+                <Smile className="w-5 h-5 text-muted-foreground" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent 
+              side="top" 
+              align="start" 
+              className="w-auto p-0 border-none shadow-lg"
+            >
+              <EmojiPicker 
+                onEmojiClick={handleEmojiClick}
+                theme={theme === "dark" ? Theme.DARK : Theme.LIGHT}
+                width={320}
+                height={400}
+              />
+            </PopoverContent>
+          </Popover>
           <Input
             ref={inputRef}
             placeholder="Type a message..."

@@ -50,6 +50,7 @@ const ChatApp = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCreatingChat, setIsCreatingChat] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -86,35 +87,43 @@ const ChatApp = () => {
   };
 
   const handleStartChat = async (userId: string) => {
-    const conversationId = await createConversation(userId);
-    if (conversationId) {
-      // Wait a moment for the conversations to refresh, then select the new one
-      setIsNewChatOpen(false);
-      setShowMobileChat(true);
-      
-      // Set a temporary conversation object while waiting for full refresh
-      const otherUser = allUsers.find(u => u.id === userId);
-      if (otherUser) {
-        setSelectedConversation({
-          id: conversationId,
-          is_group: false,
-          group_name: null,
-          group_avatar: null,
-          participants: [{
-            id: otherUser.id,
-            username: otherUser.username,
-            display_name: otherUser.display_name,
-            avatar_url: otherUser.avatar_url,
-            is_online: otherUser.is_online || false,
-            last_seen: new Date().toISOString(),
-          }],
-          last_message: null,
-          unread_count: 0,
-          updated_at: new Date().toISOString(),
-        });
+    if (isCreatingChat) return;
+    
+    setIsCreatingChat(true);
+    try {
+      const conversationId = await createConversation(userId);
+      if (conversationId) {
+        // Close dialog and show chat immediately
+        setIsNewChatOpen(false);
+        setShowMobileChat(true);
+        
+        // Set a temporary conversation object while waiting for full refresh
+        const otherUser = allUsers.find(u => u.id === userId);
+        if (otherUser) {
+          setSelectedConversation({
+            id: conversationId,
+            is_group: false,
+            group_name: null,
+            group_avatar: null,
+            participants: [{
+              id: otherUser.id,
+              username: otherUser.username,
+              display_name: otherUser.display_name,
+              avatar_url: otherUser.avatar_url,
+              is_online: otherUser.is_online || false,
+              last_seen: new Date().toISOString(),
+            }],
+            last_message: null,
+            unread_count: 0,
+            updated_at: new Date().toISOString(),
+          });
+        }
+        toast.success('Chat started!');
+      } else {
+        toast.error('Failed to start conversation');
       }
-    } else {
-      toast.error('Failed to start conversation');
+    } finally {
+      setIsCreatingChat(false);
     }
   };
 
@@ -218,9 +227,10 @@ const ChatApp = () => {
                   />
                 </div>
                 <ScrollArea className="h-[300px]">
-                  {isSearching || usersLoading ? (
-                    <div className="flex justify-center py-4">
+                  {isSearching || usersLoading || isCreatingChat ? (
+                    <div className="flex flex-col items-center justify-center py-8">
                       <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                      {isCreatingChat && <p className="text-sm text-muted-foreground mt-2">Starting chat...</p>}
                     </div>
                   ) : searchQuery.trim().length >= 2 ? (
                     // Show search results
@@ -229,9 +239,10 @@ const ChatApp = () => {
                         {searchResults.map((user) => (
                           <div
                             key={user.id}
-                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                            onClick={() => handleStartChat(user.id)}
                           >
-                            <div className="flex items-center gap-3" onClick={() => handleStartChat(user.id)}>
+                            <div className="flex items-center gap-3 flex-1">
                               <Avatar>
                                 <AvatarImage src={user.avatar_url || ''} />
                                 <AvatarFallback>{user.display_name?.[0] || user.username[0]}</AvatarFallback>
@@ -267,9 +278,10 @@ const ChatApp = () => {
                         allUsers.map((u) => (
                           <div
                             key={u.id}
-                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                            onClick={() => handleStartChat(u.id)}
                           >
-                            <div className="flex items-center gap-3 flex-1" onClick={() => handleStartChat(u.id)}>
+                            <div className="flex items-center gap-3 flex-1">
                               <div className="relative">
                                 <Avatar>
                                   <AvatarImage src={u.avatar_url || ''} />

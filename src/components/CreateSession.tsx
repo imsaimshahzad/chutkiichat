@@ -1,16 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Copy, Check, ArrowRight } from "lucide-react";
+import { Sparkles, Copy, Check, ArrowRight, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
 import { generateSessionCode, generateAnonymousName, createSession } from "@/lib/chatUtils";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const CreateSession = () => {
   const navigate = useNavigate();
   const [sessionCode, setSessionCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [userName] = useState(generateAnonymousName());
+  const [userName, setUserName] = useState(generateAnonymousName());
+  const [editingName, setEditingName] = useState(userName);
+  const [nameDialogOpen, setNameDialogOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreate = async () => {
@@ -41,6 +52,16 @@ const CreateSession = () => {
     if (sessionCode) {
       sessionStorage.setItem(`room-${sessionCode}-user`, userName);
       navigate(`/room/${sessionCode}`);
+    }
+  };
+
+  const handleNameSave = () => {
+    if (editingName.trim()) {
+      setUserName(editingName.trim());
+      setNameDialogOpen(false);
+      toast.success("Name updated!");
+    } else {
+      toast.error("Please enter a valid name");
     }
   };
 
@@ -99,7 +120,49 @@ const CreateSession = () => {
 
           <div className="text-center py-2 sm:py-3 bg-muted/50 rounded-lg sm:rounded-xl">
             <p className="text-xs text-muted-foreground mb-0.5 sm:mb-1">You'll chat as</p>
-            <p className="font-semibold text-primary text-sm sm:text-base">{userName}</p>
+            <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
+              <DialogTrigger asChild>
+                <button 
+                  className="inline-flex items-center gap-1.5 font-semibold text-primary text-sm sm:text-base hover:underline cursor-pointer"
+                  onClick={() => setEditingName(userName)}
+                >
+                  {userName}
+                  <Pencil className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[90vw] sm:max-w-sm">
+                <DialogHeader>
+                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
+                  <DialogDescription>
+                    Enter a display name for this chat session.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  <Input
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    placeholder="Enter your name..."
+                    maxLength={50}
+                    className="h-11"
+                  />
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => setNameDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
+                      onClick={handleNameSave}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           <Button 

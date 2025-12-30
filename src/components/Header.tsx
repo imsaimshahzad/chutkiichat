@@ -49,7 +49,7 @@ const Header = () => {
                     When everyone leaves, the room vanishes forever.
                   </p>
                   <p className="text-muted-foreground text-sm">
-                    "Chutki" means "in an instant" — that's how fast and temporary your chats are!
+                    "Chutkii" means "in an instant" — that's how fast and temporary your chats are!
                   </p>
                 </DialogDescription>
               </DialogHeader>
@@ -70,8 +70,8 @@ const Header = () => {
                   <div className="flex gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">1</div>
                     <div>
-                      <p className="font-medium text-foreground">Create a Chutki Room</p>
-                      <p className="text-sm text-muted-foreground">Click "Start Chutki" to generate a unique 4-digit room code.</p>
+                      <p className="font-medium text-foreground">Create a Chutkii Room</p>
+                      <p className="text-sm text-muted-foreground">Click "Start Chutkii" to generate a unique 4-digit room code.</p>
                     </div>
                   </div>
                   <div className="flex gap-3">

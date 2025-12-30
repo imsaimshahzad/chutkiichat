@@ -165,7 +165,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
             <MessageCircle className="w-5 h-5 text-white" />
           </div>
           <div className="text-center">
-            <p className="text-xs text-muted-foreground">Chutki Room</p>
+            <p className="text-xs text-muted-foreground">Chutkii Room</p>
             <div className="flex items-center gap-2">
               <span className="font-mono font-bold text-gradient-chutki tracking-[0.2em] text-lg">
                 {sessionCode}

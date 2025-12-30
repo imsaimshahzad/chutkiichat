@@ -21,7 +21,7 @@ const CreateSession = () => {
     
     if (success) {
       setSessionCode(code);
-      toast.success("Your Chutki room is ready!");
+      toast.success("Your Chutkii room is ready!");
     } else {
       toast.error("Failed to create room. Try again.");
     }
@@ -51,7 +51,7 @@ const CreateSession = () => {
           <Sparkles className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-foreground">Create a New Chutki</h2>
+          <h2 className="text-xl font-bold text-foreground">Create a New Chutkii</h2>
           <p className="text-sm text-muted-foreground">Start your temporary chat room</p>
         </div>
       </div>
@@ -70,14 +70,14 @@ const CreateSession = () => {
           ) : (
             <>
               <Sparkles className="w-5 h-5" />
-              Start Chutki
+              Start Chutkii
             </>
           )}
         </Button>
       ) : (
         <div className="space-y-4">
           <div className="text-center bg-secondary/50 rounded-2xl p-4">
-            <p className="text-sm text-muted-foreground mb-2">Your Chutki Code</p>
+            <p className="text-sm text-muted-foreground mb-2">Your Chutkii Code</p>
             <div className="flex items-center justify-center gap-3">
               <span className="font-mono text-4xl font-bold text-gradient-chutki tracking-[0.3em]">
                 {sessionCode}

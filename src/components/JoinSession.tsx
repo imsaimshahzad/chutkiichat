@@ -53,7 +53,7 @@ const JoinSession = () => {
           <Users className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-foreground">Join a Chutki Room</h2>
+          <h2 className="text-xl font-bold text-foreground">Join a Chutkii Room</h2>
           <p className="text-sm text-muted-foreground">Enter a 4-digit room code</p>
         </div>
       </div>
@@ -122,7 +122,7 @@ const JoinSession = () => {
             </>
           ) : (
             <>
-              Join Chutki
+              Join Chutkii
               <ArrowRight className="w-5 h-5" />
             </>
           )}

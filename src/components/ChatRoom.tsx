@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages } from "@/lib/chatUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 
 interface ChatRoomProps {
   sessionCode: string;
@@ -18,6 +19,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
   const [copied, setCopied] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { typingText, handleTyping, stopTyping } = useTypingIndicator(sessionCode, userName);
 
   useEffect(() => {
     console.log('ChatRoom mounted for session:', sessionCode, 'user:', userName);
@@ -102,6 +104,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
 
     const content = newMessage.trim();
     setNewMessage("");
+    stopTyping(); // Stop typing indicator when message is sent
     
     const success = await addMessage(sessionCode, userName, content, false);
     if (!success) {
@@ -190,6 +193,23 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
             </div>
           </div>
         ))}
+        
+        {/* Typing Indicator */}
+        {typingText && (
+          <div className="flex justify-start animate-fade-in">
+            <div className="glass-card rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+                <span className="text-sm text-muted-foreground">{typingText}</span>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div ref={messagesEndRef} />
       </div>
 
@@ -204,7 +224,12 @@ const ChatRoom = ({ sessionCode, userName, onLeave }: ChatRoomProps) => {
             ref={inputRef}
             placeholder="Type a message..."
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value);
+              if (e.target.value.trim()) {
+                handleTyping();
+              }
+            }}
             onKeyDown={handleKeyDown}
             className="flex-1"
           />

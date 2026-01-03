@@ -654,11 +654,11 @@ const ChatApp = () => {
 
   // Chat area content
   const ChatArea = () => (
-    <div className="flex flex-col h-full overflow-hidden liquid-bg">
+    <div className="flex flex-col h-full overflow-hidden">
       {selectedConversation ? (
         <>
           {/* Chat Header with liquid glass */}
-          <div className="liquid-glass px-2 sm:px-4 py-2 flex items-center justify-between flex-shrink-0 rounded-none">
+          <div className="liquid-glass px-2 sm:px-4 py-2 flex items-center justify-between flex-shrink-0 rounded-none border-b border-border/50">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <Button
                 variant="ghost"
@@ -730,7 +730,7 @@ const ChatApp = () => {
           </div>
 
           {/* Messages with WhatsApp background */}
-          <ScrollArea className="flex-1 wa-chat-bg">
+          <div className="flex-1 min-h-0 overflow-y-auto wa-chat-bg scroll-touch">
             <div className="p-3 sm:p-4">
               {msgsLoading ? (
                 <div className="flex justify-center py-8">
@@ -762,7 +762,7 @@ const ChatApp = () => {
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Reply indicator */}
           {replyToMessage && (
@@ -785,7 +785,7 @@ const ChatApp = () => {
           )}
 
           {/* Message Input with liquid glass */}
-          <div className="liquid-glass px-2 py-2 safe-area-inset-bottom flex-shrink-0 rounded-none">
+          <div className="liquid-glass px-2 py-2 flex-shrink-0 rounded-none border-t border-border/50 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -816,7 +816,7 @@ const ChatApp = () => {
           </div>
         </>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center p-6 liquid-bg">
+        <div className="flex-1 flex flex-col items-center justify-center p-6 overflow-hidden">
           <div className="liquid-glass-card rounded-2xl p-8 shadow-lg max-w-md text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-6 mx-auto shadow-lg shadow-primary/30">
               <MessageCircle className="h-10 w-10 text-primary-foreground" />
@@ -835,9 +835,9 @@ const ChatApp = () => {
 
   return (
     <>
-      <div className="app-viewport flex liquid-bg overflow-hidden">
+      <div className="fixed inset-0 flex liquid-bg overflow-hidden">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex w-[30%] min-w-[300px] max-w-[400px] flex-col liquid-glass wa-sidebar flex-shrink-0 rounded-none">
+        <div className="hidden md:flex w-[30%] min-w-[300px] max-w-[400px] flex-col liquid-glass wa-sidebar flex-shrink-0 rounded-none border-r border-border/50">
           {SidebarContent()}
         </div>
 

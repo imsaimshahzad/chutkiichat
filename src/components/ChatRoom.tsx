@@ -290,7 +290,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] liquid-bg overflow-hidden">
+    <div className="fixed inset-0 flex flex-col liquid-bg">
       {/* Header */}
       <header className="liquid-glass px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up flex-shrink-0 rounded-none border-b border-border/50">
         <Button 

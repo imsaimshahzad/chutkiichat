@@ -290,9 +290,9 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] liquid-bg">
+    <div className="flex flex-col h-[100dvh] liquid-bg overflow-hidden">
       {/* Header */}
-      <header className="liquid-glass px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shrink-0 rounded-none">
+      <header className="liquid-glass px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up flex-shrink-0 rounded-none border-b border-border/50">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -352,7 +352,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 overscroll-contain">
+      <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 overscroll-contain">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground px-4">
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
@@ -435,7 +435,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </div>
 
       {/* Input */}
-      <div className="p-3 sm:p-4 liquid-glass shrink-0 safe-area-inset-bottom rounded-none">
+      <div className="p-3 sm:p-4 liquid-glass flex-shrink-0 rounded-none border-t border-border/50 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-[calc(1rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2 mb-2 sm:mb-3">
           <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
           <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>

@@ -290,9 +290,9 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col liquid-bg">
+    <div className="flex flex-col h-[100dvh] bg-background">
       {/* Header */}
-      <header className="liquid-glass px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up flex-shrink-0 rounded-none border-b border-border/50">
+      <header className="bg-card border-b border-border px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shadow-sm shrink-0">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -303,13 +303,13 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
         </Button>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-md shadow-primary/30">
-            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div className="text-center">
             <p className="text-[10px] sm:text-xs text-muted-foreground">Chutkii Room</p>
             <div className="flex items-center gap-1 sm:gap-2">
-              <span className="font-mono font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
+              <span className="font-mono font-bold text-gradient-chutki tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
                 {sessionCode}
               </span>
               <Button 
@@ -352,7 +352,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </header>
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 scroll-touch">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 overscroll-contain">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground px-4">
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
@@ -435,8 +435,8 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       </div>
 
       {/* Input */}
-      <div className="p-3 sm:p-4 liquid-glass flex-shrink-0 rounded-none border-t border-border/50 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-        <div className="flex items-center gap-2 mb-1 sm:mb-2">
+      <div className="p-3 sm:p-4 bg-card border-t border-border shrink-0 safe-area-inset-bottom">
+        <div className="flex items-center gap-2 mb-2 sm:mb-3">
           <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
           <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
             <DialogTrigger asChild>

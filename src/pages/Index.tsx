@@ -8,10 +8,10 @@ import { MessageCircle, Shield, Clock, Zap, UserCheck } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="fixed inset-0 overflow-y-auto overflow-x-hidden liquid-bg">
+    <div className="min-h-screen liquid-bg">
       <Header />
       
-      <main className="pt-20 sm:pt-24 pb-8 sm:pb-12 px-3 sm:px-4 pb-safe">
+      <main className="pt-20 sm:pt-24 pb-8 sm:pb-12 px-3 sm:px-4">
         {/* Background decoration - hidden on mobile for performance */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 hidden sm:block">
           <div className="absolute top-20 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-pulse-soft" />

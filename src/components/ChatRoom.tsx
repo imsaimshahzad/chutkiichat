@@ -436,7 +436,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
 
       {/* Input */}
       <div className="p-3 sm:p-4 liquid-glass flex-shrink-0 rounded-none border-t border-border/50 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+        <div className="flex items-center gap-2 mb-1 sm:mb-2">
           <span className="text-[10px] sm:text-xs text-muted-foreground">Chatting as</span>
           <Dialog open={nameDialogOpen} onOpenChange={setNameDialogOpen}>
             <DialogTrigger asChild>

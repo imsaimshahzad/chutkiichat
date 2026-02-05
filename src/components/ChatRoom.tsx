@@ -30,6 +30,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import MessageReactionsComponent from "./MessageReactions";
 
 interface ChatRoomProps {
@@ -48,6 +59,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
   const [editingName, setEditingName] = useState(userName);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -293,14 +305,34 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
     <div className="flex flex-col h-[100dvh] bg-background">
       {/* Header */}
       <header className="bg-card border-b border-border px-3 sm:px-4 py-3 flex items-center justify-between animate-slide-up shadow-sm shrink-0">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={onLeave}
-          className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10"
-        >
-          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-        </Button>
+        <AlertDialog open={leaveDialogOpen} onOpenChange={setLeaveDialogOpen}>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10"
+            >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="max-w-[90vw] sm:max-w-md">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-gradient-chutki">Leave Chutkii Room?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to leave this room? If you're the last person here, the room and all messages will be permanently deleted.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Stay</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={onLeave}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Leave Room
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">

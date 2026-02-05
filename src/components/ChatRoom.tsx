@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, Copy, Check, Zap, Smile, Pencil, Users, Paperclip, X, FileText, Download, CheckCheck, MessageCircle } from "lucide-react";
+import { Send, ArrowLeft, Copy, Check, MessageCircle, Smile, Pencil, Users, Paperclip, X, FileText, Download, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Message, formatTime, addMessage, getMessages, uploadFile } from "@/lib/chatUtils";
@@ -317,7 +317,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
           </AlertDialogTrigger>
           <AlertDialogContent className="max-w-[90vw] sm:max-w-md">
             <AlertDialogHeader>
-              <AlertDialogTitle className="flash-text font-bold">Leave Flash Room?</AlertDialogTitle>
+              <AlertDialogTitle className="text-gradient-chutki">Leave Chutkii Room?</AlertDialogTitle>
               <AlertDialogDescription>
                 Are you sure you want to leave this room? If you're the last person here, the room and all messages will be permanently deleted.
               </AlertDialogDescription>
@@ -335,13 +335,13 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
         </AlertDialog>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flash-gradient flex items-center justify-center">
-            <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div className="text-center">
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Flash Room</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Chutkii Room</p>
             <div className="flex items-center gap-1 sm:gap-2">
-              <span className="font-mono font-bold flash-text tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
+              <span className="font-mono font-bold text-gradient-chutki tracking-[0.15em] sm:tracking-[0.2em] text-base sm:text-lg">
                 {sessionCode}
               </span>
               <Button 
@@ -387,11 +387,11 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 overscroll-contain">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground px-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flash-gradient flex items-center justify-center mb-3 sm:mb-4">
-              <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
+              <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
             </div>
             <p className="font-medium text-sm sm:text-base">No messages yet</p>
-            <p className="text-xs sm:text-sm">Start chatting! ⚡</p>
+            <p className="text-xs sm:text-sm">Start the conversation!</p>
           </div>
         )}
         
@@ -482,7 +482,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
             </DialogTrigger>
             <DialogContent className="max-w-[90vw] sm:max-w-sm">
               <DialogHeader>
-                <DialogTitle className="flash-text font-bold">Change Your Name</DialogTitle>
+                <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
                 <DialogDescription>
                   Enter a new display name for this chat session.
                 </DialogDescription>
@@ -504,7 +504,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
                     Cancel
                   </Button>
                   <Button 
-                    className="flex-1 flash-button"
+                    className="flex-1 bg-gradient-to-r from-primary to-accent text-white"
                     onClick={() => {
                       if (editingName.trim() && editingName.trim() !== userName) {
                         onNameChange?.(editingName.trim());
@@ -604,7 +604,7 @@ const ChatRoom = ({ sessionCode, userName, onLeave, onNameChange }: ChatRoomProp
           <Button 
             onClick={handleSend}
             disabled={(!newMessage.trim() && !selectedFile) || isUploading}
-            className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl flash-gradient hover:opacity-90 text-primary-foreground shadow-md disabled:opacity-50 shrink-0 active:scale-95"
+            className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 text-white shadow-md disabled:opacity-50 shrink-0 active:scale-95"
           >
             <Send className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>

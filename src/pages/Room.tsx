@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ChatRoom from "@/components/ChatRoom";
 import { sessionExists, generateAnonymousName, deleteRoomData, getOnlineUsersCount } from "@/lib/chatUtils";
 import { toast } from "sonner";
-import { Zap, AlertCircle } from "lucide-react";
+import { MessageCircle, Zap } from "lucide-react";
 
 const Room = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +31,7 @@ const Room = () => {
       
       if (!exists) {
         setError("Room not found");
-        toast.error("This Flash room doesn't exist. Redirecting...");
+        toast.error("This Chutkii room doesn't exist. Redirecting...");
         setTimeout(() => navigate("/"), 2000);
         return;
       }
@@ -86,7 +86,7 @@ const Room = () => {
           {error ? (
             <>
               <div className="w-16 h-16 mx-auto rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
-                <AlertCircle className="w-8 h-8 text-destructive" />
+                <MessageCircle className="w-8 h-8 text-destructive" />
               </div>
               <p className="text-destructive text-lg font-medium">{error}</p>
               <p className="text-muted-foreground">Redirecting to home...</p>
@@ -94,8 +94,9 @@ const Room = () => {
           ) : (
             <>
               <div className="relative">
-                <div className="w-20 h-20 mx-auto rounded-2xl flash-gradient flex items-center justify-center shadow-lg flash-glow">
-                  <Zap className="w-10 h-10 text-primary-foreground animate-lightning" />
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                  <MessageCircle className="w-10 h-10 text-white" />
+                  <Zap className="w-5 h-5 text-yellow-400 absolute -top-1 -right-1 animate-sparkle" />
                 </div>
               </div>
               <div className="flex items-center gap-2 justify-center">
@@ -103,7 +104,7 @@ const Room = () => {
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
-              <p className="text-muted-foreground font-medium">Joining Flash room...</p>
+              <p className="text-muted-foreground font-medium">Joining Chutkii room...</p>
             </>
           )}
         </div>

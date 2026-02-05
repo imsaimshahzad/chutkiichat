@@ -2,12 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Light Mode: White & Yellow/Orange FlashChat theme */
-    --background: 48 30% 98%;
+    /* Light Mode: White & Blue theme with Liquid Glass */
+    --background: 210 20% 98%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -16,26 +16,25 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Vibrant Yellow primary */
-    --primary: 45 100% 51%;
-    --primary-foreground: 0 0% 10%;
+    /* Blue primary */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 48 40% 92%;
+    --secondary: 214 32% 91%;
     --secondary-foreground: 222 47% 11%;
 
-    --muted: 48 25% 96%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    /* Orange accent */
-    --accent: 25 95% 53%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 217 91% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 48 35% 88%;
-    --input: 48 35% 91%;
-    --ring: 45 100% 51%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
 
     --radius: 0.5rem;
 
@@ -44,85 +43,75 @@
 
     /* Liquid Glass tokens - Light */
     --glass-bg: 0 0% 100% / 0.7;
-    --glass-border: 48 60% 92% / 0.7;
+    --glass-border: 0 0% 100% / 0.5;
     --glass-shine: 0 0% 100% / 0.8;
     --glass-blur: 20px;
 
-    /* Chat specific tokens - Light (Yellow/Orange theme) */
-    --wa-header: 45 100% 51%;
-    --wa-header-dark: 38 100% 45%;
-    --wa-sent-bubble: 48 100% 92%;
+    /* Chat specific tokens - Light (Blue theme) */
+    --wa-header: 217 91% 55%;
+    --wa-header-dark: 217 91% 45%;
+    --wa-sent-bubble: 217 91% 92%;
     --wa-received-bubble: 0 0% 100%;
-    --wa-chat-bg: 48 30% 97%;
+    --wa-chat-bg: 210 40% 96%;
     --wa-online: 142 71% 45%;
-    --wa-read: 25 95% 53%;
+    --wa-read: 217 91% 60%;
     
     /* Shadows */
-    --shadow-soft: 0 1px 3px hsl(45 100% 51% / 0.15);
+    --shadow-soft: 0 1px 3px hsl(217 91% 60% / 0.1);
     --shadow-card: 0 2px 8px hsl(222 47% 11% / 0.08);
-    --shadow-glass: 0 8px 32px hsl(45 100% 51% / 0.12), inset 0 1px 0 hsl(0 0% 100% / 0.5);
-    
-    /* FlashChat special tokens */
-    --flash-yellow: 45 100% 51%;
-    --flash-orange: 25 95% 53%;
-    --flash-glow: 45 100% 51% / 0.35;
+    --shadow-glass: 0 8px 32px hsl(217 91% 60% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.5);
   }
 
   .dark {
-    /* Dark Mode: Deep dark with warm amber accents */
-    --background: 30 15% 6%;
+    /* Dark Mode: Full Black & Red theme with Liquid Glass */
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
 
-    --card: 30 12% 9%;
+    --card: 0 0% 7%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 30 12% 9%;
+    --popover: 0 0% 7%;
     --popover-foreground: 0 0% 98%;
 
-    /* Warm Orange primary for dark mode */
-    --primary: 38 100% 50%;
-    --primary-foreground: 0 0% 10%;
+    /* Red primary */
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 12% 14%;
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 30 12% 15%;
+    --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
 
-    --accent: 25 95% 55%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 0 84% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 12% 18%;
-    --input: 30 12% 15%;
-    --ring: 38 100% 50%;
+    --border: 0 0% 18%;
+    --input: 0 0% 15%;
+    --ring: 0 84% 60%;
 
     /* Liquid Glass tokens - Dark */
-    --glass-bg: 30 12% 10% / 0.7;
-    --glass-border: 38 60% 50% / 0.15;
+    --glass-bg: 0 0% 10% / 0.6;
+    --glass-border: 0 0% 100% / 0.1;
     --glass-shine: 0 0% 100% / 0.05;
     --glass-blur: 24px;
 
-    /* Chat specific tokens - Dark (Orange theme) */
-    --wa-header: 30 12% 10%;
-    --wa-header-dark: 30 12% 7%;
-    --wa-sent-bubble: 38 75% 22%;
-    --wa-received-bubble: 30 12% 14%;
-    --wa-chat-bg: 30 15% 5%;
+    /* Chat specific tokens - Dark (Red theme) */
+    --wa-header: 0 0% 10%;
+    --wa-header-dark: 0 0% 7%;
+    --wa-sent-bubble: 0 84% 25%;
+    --wa-received-bubble: 0 0% 12%;
+    --wa-chat-bg: 0 0% 5%;
     --wa-online: 142 71% 45%;
-    --wa-read: 38 100% 50%;
+    --wa-read: 0 84% 60%;
     
     /* Shadows for dark mode */
     --shadow-soft: 0 1px 3px hsl(0 0% 0% / 0.5);
     --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.6);
-    --shadow-glass: 0 8px 32px hsl(38 100% 50% / 0.1), inset 0 1px 0 hsl(0 0% 100% / 0.05);
-    
-    /* FlashChat special tokens - Dark */
-    --flash-yellow: 45 100% 55%;
-    --flash-orange: 25 95% 50%;
-    --flash-glow: 38 100% 50% / 0.25;
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(0 0% 100% / 0.05);
   }
 }
 
@@ -139,7 +128,7 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Space Grotesk', 'Inter', 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, 'Lucida Grande', Arial, sans-serif;
     min-height: 100%;
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
@@ -298,12 +287,12 @@
   /* Chat Background with pattern */
   .wa-chat-bg {
     background-color: hsl(var(--wa-chat-bg));
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59E0B' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233B82F6' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   .dark .wa-chat-bg {
     background-color: hsl(var(--wa-chat-bg));
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59E0B' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23EF4444' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   /* Sent message bubble */
@@ -383,63 +372,6 @@
 
   .animate-sparkle {
     animation: sparkle 2s ease-in-out infinite;
-  }
-
-  /* FlashChat specific styles */
-  .flash-gradient {
-    background: linear-gradient(135deg, hsl(var(--flash-yellow)) 0%, hsl(var(--flash-orange)) 100%);
-  }
-
-  .flash-text {
-    background: linear-gradient(135deg, hsl(var(--flash-yellow)) 0%, hsl(var(--flash-orange)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .flash-glow {
-    box-shadow: 0 0 30px hsl(var(--flash-glow)), 0 0 60px hsl(var(--flash-glow));
-  }
-
-  .flash-button {
-    background: linear-gradient(135deg, hsl(var(--flash-yellow)) 0%, hsl(var(--flash-orange)) 100%);
-    color: hsl(0 0% 10%);
-    font-weight: 600;
-    box-shadow: 0 4px 20px hsl(var(--flash-glow));
-    transition: all 0.2s ease;
-  }
-
-  .flash-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px hsl(var(--flash-glow));
-  }
-
-  .flash-button:active {
-    transform: translateY(0);
-  }
-
-  /* Lightning bolt animation */
-  @keyframes lightning-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    25% { opacity: 0.8; transform: scale(1.05); }
-    50% { opacity: 1; transform: scale(1); }
-    75% { opacity: 0.6; transform: scale(0.98); }
-  }
-
-  .animate-lightning {
-    animation: lightning-pulse 2s ease-in-out infinite;
-  }
-
-  /* Fade message animation */
-  @keyframes fade-message {
-    0% { opacity: 0; transform: translateX(-10px); }
-    15% { opacity: 1; transform: translateX(0); }
-    85% { opacity: 1; }
-    100% { opacity: 0.5; }
-  }
-
-  .animate-fade-message {
-    animation: fade-message 5s ease-out forwards;
   }
 }
 

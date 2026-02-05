@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Zap, Copy, Check, ArrowRight, Pencil } from "lucide-react";
+import { Sparkles, Copy, Check, ArrowRight, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
@@ -32,7 +32,7 @@ const CreateSession = () => {
     
     if (success) {
       setSessionCode(code);
-      toast.success("⚡ Flash room created!");
+      toast.success("Your Chutkii room is ready!");
     } else {
       toast.error("Failed to create room. Try again.");
     }
@@ -68,39 +68,39 @@ const CreateSession = () => {
   return (
     <SessionCard delay={100}>
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flash-gradient flex items-center justify-center shadow-lg shrink-0">
-          <Zap className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground animate-lightning" />
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
+          <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Create a Flash Room</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Create a New Chutkii</h2>
           <p className="text-xs sm:text-sm text-muted-foreground">Start your temporary chat room</p>
         </div>
       </div>
 
       {!sessionCode ? (
         <Button 
-          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl flash-button font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
           onClick={handleCreate}
           disabled={isCreating}
         >
           {isCreating ? (
             <>
-              <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               Creating...
             </>
           ) : (
             <>
-              <Zap className="w-5 h-5" />
-              Start Flash ⚡
+              <Sparkles className="w-5 h-5" />
+              Start Chutkii
             </>
           )}
         </Button>
       ) : (
         <div className="space-y-3 sm:space-y-4">
           <div className="text-center bg-primary/10 border border-primary/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
-            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Your Flash Code</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Your Chutkii Code</p>
             <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <span className="font-mono text-2xl sm:text-4xl font-bold flash-text tracking-[0.2em] sm:tracking-[0.3em]">
+              <span className="font-mono text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent tracking-[0.2em] sm:tracking-[0.3em]">
                 {sessionCode}
               </span>
               <Button 
@@ -132,7 +132,7 @@ const CreateSession = () => {
               </DialogTrigger>
               <DialogContent className="max-w-[90vw] sm:max-w-sm">
                 <DialogHeader>
-                  <DialogTitle className="flash-text font-bold">Change Your Name</DialogTitle>
+                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
                   <DialogDescription>
                     Enter a display name for this chat session.
                   </DialogDescription>
@@ -154,7 +154,7 @@ const CreateSession = () => {
                       Cancel
                     </Button>
                     <Button 
-                      className="flex-1 flash-button"
+                      className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20"
                       onClick={handleNameSave}
                     >
                       Save
@@ -166,7 +166,7 @@ const CreateSession = () => {
           </div>
 
           <Button 
-            className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl flash-button font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
             onClick={handleJoinChat}
           >
             Enter Room

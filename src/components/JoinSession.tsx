@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, ArrowRight, Delete, Pencil } from "lucide-react";
+import { Users, ArrowRight, Delete, Pencil, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
@@ -75,11 +75,11 @@ const JoinSession = () => {
   return (
     <SessionCard delay={200}>
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-lg shrink-0">
           <Users className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Chutkii Room</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Flash Room</h2>
           <p className="text-xs sm:text-sm text-muted-foreground">Enter a 4-digit room code</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ const JoinSession = () => {
               </DialogTrigger>
               <DialogContent className="max-w-[90vw] sm:max-w-sm">
                 <DialogHeader>
-                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
+                  <DialogTitle className="flash-text font-bold">Change Your Name</DialogTitle>
                   <DialogDescription>
                     Enter a display name for this chat session.
                   </DialogDescription>
@@ -177,7 +177,7 @@ const JoinSession = () => {
                       Cancel
                     </Button>
                     <Button 
-                      className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20"
+                      className="flex-1 flash-button"
                       onClick={handleNameSave}
                     >
                       Save
@@ -190,18 +190,19 @@ const JoinSession = () => {
         )}
 
         <Button 
-          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary/80 to-primary hover:from-primary/70 hover:to-primary/90 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
+          className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl flash-button font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
           onClick={handleJoin}
           disabled={code.length !== 4 || isLoading}
         >
           {isLoading ? (
             <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               Joining...
             </>
           ) : (
             <>
-              Join Chutkii
+              <Zap className="w-5 h-5" />
+              Join Flash
               <ArrowRight className="w-5 h-5" />
             </>
           )}

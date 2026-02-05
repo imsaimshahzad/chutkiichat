@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Segoe UI', 'Helvetica Neue', 'Helvetica', 'Lucida Grande', 'Arial', 'sans-serif'],
+        sans: ['Space Grotesk', 'Inter', 'Segoe UI', 'sans-serif'],
+        display: ['Space Grotesk', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -57,6 +58,11 @@ export default {
           online: "hsl(var(--wa-online))",
           read: "hsl(var(--wa-read))",
         },
+        flash: {
+          yellow: "hsl(45 100% 51%)",
+          orange: "hsl(25 100% 55%)",
+          amber: "hsl(35 100% 55%)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -83,12 +89,22 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-8px)" },
         },
+        flash: {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.7", transform: "scale(1.1)" },
+        },
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite linear",
         float: "float 4s ease-in-out infinite",
+        flash: "flash 2s ease-in-out infinite",
+        "fade-up": "fade-up 0.6s ease-out",
       },
     },
   },

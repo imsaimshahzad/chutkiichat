@@ -1,5 +1,38 @@
 import { supabase } from "@/integrations/supabase/client";
 
+// Check online users count in a room using presence
+export const getOnlineUsersCount = async (sessionCode: string): Promise<number> => {
+  return new Promise((resolve) => {
+    const channel = supabase.channel(`presence-check-${sessionCode}-${Date.now()}`);
+    let resolved = false;
+    
+    // Timeout after 2 seconds
+    const timeout = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        supabase.removeChannel(channel);
+        resolve(0);
+      }
+    }, 2000);
+    
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timeout);
+          const state = channel.presenceState();
+          let count = 0;
+          Object.values(state).forEach((presences: any) => {
+            count += presences.length;
+          });
+          supabase.removeChannel(channel);
+          resolve(count);
+        }
+      })
+      .subscribe();
+  });
+};
+
 // Message type
 export interface Message {
   id: string;

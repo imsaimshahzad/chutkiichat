@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChatRoom from "@/components/ChatRoom";
-import { sessionExists, generateAnonymousName, deleteRoomData } from "@/lib/chatUtils";
+import { sessionExists, generateAnonymousName, deleteRoomData, getOnlineUsersCount } from "@/lib/chatUtils";
 import { toast } from "sonner";
 import { MessageCircle, Zap } from "lucide-react";
 
@@ -47,15 +47,26 @@ const Room = () => {
     initRoom();
   }, [id, navigate]);
 
-  const handleLeave = () => {
+  const handleLeave = async () => {
     if (id) {
       sessionStorage.removeItem(`room-${id}-user`);
-      // Delete all room data immediately when leaving
-      deleteRoomData(id).then(success => {
-        if (success) {
-          console.log('Room closed and data deleted');
+      
+      // Small delay to allow presence to update after we leave
+      setTimeout(async () => {
+        // Check if other users are still in the room
+        const onlineCount = await getOnlineUsersCount(id);
+        console.log('Online users after leaving:', onlineCount);
+        
+        // Only delete room if no other users are present
+        if (onlineCount <= 0) {
+          const success = await deleteRoomData(id);
+          if (success) {
+            console.log('Last user left - room closed and data deleted');
+          }
+        } else {
+          console.log('Other users still in room, keeping room active');
         }
-      });
+      }, 500);
     }
     navigate("/");
   };

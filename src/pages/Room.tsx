@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChatRoom from "@/components/ChatRoom";
-import { sessionExists, generateAnonymousName } from "@/lib/chatUtils";
+import { sessionExists, generateAnonymousName, deleteRoomData } from "@/lib/chatUtils";
 import { toast } from "sonner";
 import { MessageCircle, Zap } from "lucide-react";
 
@@ -50,6 +50,12 @@ const Room = () => {
   const handleLeave = () => {
     if (id) {
       sessionStorage.removeItem(`room-${id}-user`);
+      // Delete all room data immediately when leaving
+      deleteRoomData(id).then(success => {
+        if (success) {
+          console.log('Room closed and data deleted');
+        }
+      });
     }
     navigate("/");
   };

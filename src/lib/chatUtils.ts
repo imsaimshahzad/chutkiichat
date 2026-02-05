@@ -173,3 +173,78 @@ export const getMessages = async (sessionCode: string): Promise<Message[]> => {
     fileName: msg.file_name || undefined
   }));
 };
+
+// Delete all room data (session, messages, reactions, reads, and files)
+export const deleteRoomData = async (sessionCode: string): Promise<boolean> => {
+  console.log('Deleting room data for session:', sessionCode);
+  
+  try {
+    // First get all messages to find file URLs
+    const { data: messages } = await supabase
+      .from('messages')
+      .select('file_url')
+      .eq('session_code', sessionCode)
+      .not('file_url', 'is', null);
+    
+    // Delete files from storage
+    if (messages && messages.length > 0) {
+      const filePaths = messages
+        .filter(m => m.file_url)
+        .map(m => {
+          // Extract path from URL: ...chat-attachments/sessionCode/filename
+          const url = m.file_url as string;
+          const match = url.match(/chat-attachments\/(.+)$/);
+          return match ? match[1] : null;
+        })
+        .filter(Boolean) as string[];
+      
+      if (filePaths.length > 0) {
+        console.log('Deleting files:', filePaths);
+        await supabase.storage.from('chat-attachments').remove(filePaths);
+      }
+    }
+    
+    // Delete message reactions
+    const { data: messageIds } = await supabase
+      .from('messages')
+      .select('id')
+      .eq('session_code', sessionCode);
+    
+    if (messageIds && messageIds.length > 0) {
+      const ids = messageIds.map(m => m.id);
+      await supabase
+        .from('message_reactions')
+        .delete()
+        .in('message_id', ids);
+    }
+    
+    // Delete message reads
+    await supabase
+      .from('message_reads')
+      .delete()
+      .eq('session_code', sessionCode);
+    
+    // Delete messages
+    await supabase
+      .from('messages')
+      .delete()
+      .eq('session_code', sessionCode);
+    
+    // Delete session
+    const { error } = await supabase
+      .from('sessions')
+      .delete()
+      .eq('code', sessionCode);
+    
+    if (error) {
+      console.error('Error deleting session:', error);
+      return false;
+    }
+    
+    console.log('Room data deleted successfully');
+    return true;
+  } catch (err) {
+    console.error('Error deleting room data:', err);
+    return false;
+  }
+};

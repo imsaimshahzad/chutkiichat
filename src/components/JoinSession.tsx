@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, ArrowRight, Delete, Pencil, Eye } from "lucide-react";
+import { Users, ArrowRight, Delete, Pencil, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
@@ -79,7 +79,7 @@ const JoinSession = () => {
           <Users className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Blink Room</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Chutki Room</h2>
           <p className="text-xs sm:text-sm text-muted-foreground">Enter your 4-digit code</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ const JoinSession = () => {
               </DialogTrigger>
               <DialogContent className="max-w-[90vw] sm:max-w-sm">
                 <DialogHeader>
-                  <DialogTitle className="text-gradient-blink">Change Your Name</DialogTitle>
+                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
                   <DialogDescription>
                     Enter a display name for this chat session.
                   </DialogDescription>
@@ -201,8 +201,8 @@ const JoinSession = () => {
             </>
           ) : (
             <>
-              <Eye className="w-5 h-5" />
-              Join Blink
+              <Sparkles className="w-5 h-5" />
+              Join Chutki
               <ArrowRight className="w-5 h-5" />
             </>
           )}

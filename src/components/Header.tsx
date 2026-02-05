@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Info, HelpCircle, Mail, AlertTriangle, Menu, Sparkles } from "lucide-react";
+import { MessageCircle, Zap, Info, HelpCircle, Mail, AlertTriangle, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,14 +35,14 @@ const Header = () => {
             <DialogTitle className="text-gradient-chutki text-xl">About ChutkiiChat</DialogTitle>
             <DialogDescription className="pt-4 text-foreground/80">
               <p className="mb-3">
-                ChutkiiChat is instant ephemeral messaging. No accounts, no history, no traces.
+                ChutkiiChat is a temporary, anonymous chat application. No accounts, no history, no traces.
               </p>
               <p className="mb-3">
                 Create a room with a simple 4-digit code, share it with friends, and start chatting instantly. 
                 When everyone leaves, the room vanishes forever.
               </p>
               <p className="text-muted-foreground text-sm">
-                Chutki mein gayab ✨ — that's the ChutkiiChat promise!
+                "Chutkii" means "in an instant" — that's how fast and temporary your chats are!
               </p>
             </DialogDescription>
           </DialogHeader>
@@ -63,8 +63,8 @@ const Header = () => {
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">1</div>
                 <div>
-                  <p className="font-medium text-foreground">Create a Chutki Room</p>
-                  <p className="text-sm text-muted-foreground">Click "Start Chutki" to generate a unique 4-digit room code.</p>
+                  <p className="font-medium text-foreground">Create a Chutkii Room</p>
+                  <p className="text-sm text-muted-foreground">Click "Start Chutkii" to generate a unique 4-digit room code.</p>
                 </div>
               </div>
               <div className="flex gap-3">
@@ -200,13 +200,13 @@ const Header = () => {
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 group">
           <div className="relative">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary via-primary to-accent flex items-center justify-center shadow-md shadow-primary/30 group-hover:shadow-lg group-hover:shadow-primary/40 transition-shadow">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-md shadow-primary/30 group-hover:shadow-lg group-hover:shadow-primary/40 transition-shadow">
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
             </div>
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent absolute -top-1 -right-1 animate-pulse-soft" />
+            <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-accent absolute -top-1 -right-1 animate-sparkle" />
           </div>
           <span className="text-lg sm:text-xl font-bold">
-            <span className="text-gradient-chutki">Chutkii</span>
+            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Chutkii</span>
             <span className="text-foreground">Chat</span>
           </span>
         </a>
@@ -228,7 +228,7 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] sm:w-[320px]">
               <SheetHeader>
-                <SheetTitle className="text-gradient-blink">Menu</SheetTitle>
+                <SheetTitle className="text-gradient-chutki">Menu</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-2 mt-6">
                 <NavItems />

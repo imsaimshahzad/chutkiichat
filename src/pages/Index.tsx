@@ -63,8 +63,8 @@ const Index = () => {
 
           {/* Footer */}
           <footer className="text-center text-muted-foreground text-xs sm:text-sm animate-fade-in px-4">
-            <p className="font-medium">⚡ No accounts. No traces. Just flash.</p>
-            <p className="mt-1 text-xs opacity-60">Messages vanish after 24 hours of inactivity</p>
+            <p className="font-medium">No accounts. No history. Just chat.</p>
+            <p className="mt-1 text-xs opacity-60">Messages disappear after 24 hours of inactivity</p>
           </footer>
         </div>
       </main>

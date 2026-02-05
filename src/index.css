@@ -6,36 +6,35 @@
 
 @layer base {
   :root {
-    /* Light Mode: White & Yellow-Orange theme with Liquid Glass */
-    --background: 45 30% 98%;
+    /* Light Mode: White & Blue theme with Liquid Glass */
+    --background: 210 20% 98%;
     --foreground: 222 47% 11%;
 
-    --card: 45 20% 100%;
+    --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
 
-    --popover: 45 20% 100%;
+    --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Vibrant Orange primary */
-    --primary: 32 95% 55%;
-    --primary-foreground: 0 0% 0%;
+    /* Blue primary */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 30% 92%;
+    --secondary: 214 32% 91%;
     --secondary-foreground: 222 47% 11%;
 
-    --muted: 45 25% 95%;
-    --muted-foreground: 30 15% 40%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Bright Yellow accent */
-    --accent: 45 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 217 91% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 45 25% 88%;
-    --input: 45 25% 88%;
-    --ring: 32 95% 55%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
 
     --radius: 0.5rem;
 
@@ -43,77 +42,76 @@
     --app-height: 100vh;
 
     /* Liquid Glass tokens - Light */
-    --glass-bg: 45 30% 100% / 0.75;
-    --glass-border: 45 50% 90% / 0.6;
-    --glass-shine: 45 100% 98% / 0.9;
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 0 0% 100% / 0.5;
+    --glass-shine: 0 0% 100% / 0.8;
     --glass-blur: 20px;
 
-    /* Chat specific tokens - Light (Orange theme) */
-    --wa-header: 32 95% 55%;
-    --wa-header-dark: 32 95% 45%;
-    --wa-sent-bubble: 45 80% 88%;
-    --wa-received-bubble: 45 30% 100%;
-    --wa-chat-bg: 45 25% 95%;
+    /* Chat specific tokens - Light (Blue theme) */
+    --wa-header: 217 91% 55%;
+    --wa-header-dark: 217 91% 45%;
+    --wa-sent-bubble: 217 91% 92%;
+    --wa-received-bubble: 0 0% 100%;
+    --wa-chat-bg: 210 40% 96%;
     --wa-online: 142 71% 45%;
-    --wa-read: 32 95% 55%;
+    --wa-read: 217 91% 60%;
     
     /* Shadows */
-    --shadow-soft: 0 1px 3px hsl(32 95% 55% / 0.15);
+    --shadow-soft: 0 1px 3px hsl(217 91% 60% / 0.1);
     --shadow-card: 0 2px 8px hsl(222 47% 11% / 0.08);
-    --shadow-glass: 0 8px 32px hsl(32 95% 55% / 0.18), inset 0 1px 0 hsl(45 100% 98% / 0.6);
+    --shadow-glass: 0 8px 32px hsl(217 91% 60% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.5);
   }
 
   .dark {
-    /* Dark Mode: Deep warm dark with Orange-Gold accents */
-    --background: 30 10% 6%;
+    /* Dark Mode: Full Black & Red theme with Liquid Glass */
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
 
-    --card: 30 8% 9%;
+    --card: 0 0% 7%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 30 8% 9%;
+    --popover: 0 0% 7%;
     --popover-foreground: 0 0% 98%;
 
-    /* Warm Orange primary */
-    --primary: 32 95% 55%;
+    /* Red primary */
+    --primary: 0 84% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 8% 14%;
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 30 6% 18%;
+    --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
 
-    /* Gold accent */
-    --accent: 45 100% 50%;
+    --accent: 0 84% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 8% 20%;
-    --input: 30 6% 18%;
-    --ring: 32 95% 55%;
+    --border: 0 0% 18%;
+    --input: 0 0% 15%;
+    --ring: 0 84% 60%;
 
     /* Liquid Glass tokens - Dark */
-    --glass-bg: 30 8% 12% / 0.7;
-    --glass-border: 32 50% 40% / 0.2;
-    --glass-shine: 45 80% 60% / 0.08;
+    --glass-bg: 0 0% 10% / 0.6;
+    --glass-border: 0 0% 100% / 0.1;
+    --glass-shine: 0 0% 100% / 0.05;
     --glass-blur: 24px;
 
-    /* Chat specific tokens - Dark (Orange theme) */
-    --wa-header: 30 8% 12%;
-    --wa-header-dark: 30 8% 8%;
-    --wa-sent-bubble: 32 70% 25%;
-    --wa-received-bubble: 30 8% 14%;
-    --wa-chat-bg: 30 10% 6%;
+    /* Chat specific tokens - Dark (Red theme) */
+    --wa-header: 0 0% 10%;
+    --wa-header-dark: 0 0% 7%;
+    --wa-sent-bubble: 0 84% 25%;
+    --wa-received-bubble: 0 0% 12%;
+    --wa-chat-bg: 0 0% 5%;
     --wa-online: 142 71% 45%;
-    --wa-read: 32 95% 55%;
+    --wa-read: 0 84% 60%;
     
     /* Shadows for dark mode */
     --shadow-soft: 0 1px 3px hsl(0 0% 0% / 0.5);
     --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.6);
-    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(45 80% 60% / 0.08);
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(0 0% 100% / 0.05);
   }
 }
 
@@ -289,12 +287,12 @@
   /* Chat Background with pattern */
   .wa-chat-bg {
     background-color: hsl(var(--wa-chat-bg));
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59E0B' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233B82F6' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   .dark .wa-chat-bg {
     background-color: hsl(var(--wa-chat-bg));
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59E0B' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23EF4444' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   /* Sent message bubble */
@@ -398,7 +396,7 @@
 
   /* FlashChat gradient text */
   .text-gradient-flash {
-    background: linear-gradient(135deg, hsl(32 95% 55%), hsl(45 100% 50%));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

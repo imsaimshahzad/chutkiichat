@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Copy, Check, ArrowRight, Pencil } from "lucide-react";
+import { Zap, Copy, Check, ArrowRight, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
@@ -32,7 +32,7 @@ const CreateSession = () => {
     
     if (success) {
       setSessionCode(code);
-      toast.success("Your Chutkii room is ready!");
+      toast.success("Your Flash room is ready! ⚡");
     } else {
       toast.error("Failed to create room. Try again.");
     }
@@ -68,17 +68,17 @@ const CreateSession = () => {
   return (
     <SessionCard delay={100}>
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
-          <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary via-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
+          <Zap className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground lightning-flash" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Create a New Chutkii</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">Start your temporary chat room</p>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Create a Flash Room</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">Start an ephemeral chat</p>
         </div>
       </div>
 
       {!sessionCode ? (
-        <Button 
+      <Button 
           className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold text-base sm:text-lg shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
           onClick={handleCreate}
           disabled={isCreating}
@@ -90,15 +90,15 @@ const CreateSession = () => {
             </>
           ) : (
             <>
-              <Sparkles className="w-5 h-5" />
-              Start Chutkii
+              <Zap className="w-5 h-5" />
+              Start Flash ⚡
             </>
           )}
         </Button>
       ) : (
         <div className="space-y-3 sm:space-y-4">
           <div className="text-center bg-primary/10 border border-primary/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
-            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Your Chutkii Code</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Your Flash Code</p>
             <div className="flex items-center justify-center gap-2 sm:gap-3">
               <span className="font-mono text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent tracking-[0.2em] sm:tracking-[0.3em]">
                 {sessionCode}
@@ -110,7 +110,7 @@ const CreateSession = () => {
                 className="shrink-0 hover:bg-primary/10 h-8 w-8 sm:h-10 sm:w-10"
               >
                 {copied ? (
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-wa-online" />
                 ) : (
                   <Copy className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 )}
@@ -132,7 +132,7 @@ const CreateSession = () => {
               </DialogTrigger>
               <DialogContent className="max-w-[90vw] sm:max-w-sm">
                 <DialogHeader>
-                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
+                  <DialogTitle className="text-gradient-flash">Change Your Name</DialogTitle>
                   <DialogDescription>
                     Enter a display name for this chat session.
                   </DialogDescription>

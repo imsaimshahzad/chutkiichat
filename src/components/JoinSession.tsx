@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, ArrowRight, Delete, Pencil } from "lucide-react";
+import { Users, ArrowRight, Delete, Pencil, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SessionCard from "./SessionCard";
@@ -75,12 +75,12 @@ const JoinSession = () => {
   return (
     <SessionCard delay={200}>
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-accent via-primary to-primary flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
           <Users className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Chutkii Room</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">Enter a 4-digit room code</p>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground truncate">Join a Flash Room</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">Enter your 4-digit code</p>
         </div>
       </div>
 
@@ -155,7 +155,7 @@ const JoinSession = () => {
               </DialogTrigger>
               <DialogContent className="max-w-[90vw] sm:max-w-sm">
                 <DialogHeader>
-                  <DialogTitle className="text-gradient-chutki">Change Your Name</DialogTitle>
+                  <DialogTitle className="text-gradient-flash">Change Your Name</DialogTitle>
                   <DialogDescription>
                     Enter a display name for this chat session.
                   </DialogDescription>
@@ -201,7 +201,8 @@ const JoinSession = () => {
             </>
           ) : (
             <>
-              Join Chutkii
+              <Zap className="w-5 h-5" />
+              Join Flash
               <ArrowRight className="w-5 h-5" />
             </>
           )}

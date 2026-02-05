@@ -1,11 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, MessageCircle, Clock, RefreshCw, Eye } from "lucide-react";
+import { Users, MessageCircle, Clock, RefreshCw, Eye, Lock, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 
 interface SessionData {
   id: string;
@@ -20,7 +23,71 @@ const Admin = () => {
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  // Check existing auth on mount
+  useEffect(() => {
+    const storedAuth = sessionStorage.getItem('admin-auth');
+    if (storedAuth) {
+      try {
+        const { token, expiry } = JSON.parse(storedAuth);
+        if (token && expiry && Date.now() < expiry) {
+          setIsAuthenticated(true);
+        } else {
+          sessionStorage.removeItem('admin-auth');
+        }
+      } catch {
+        sessionStorage.removeItem('admin-auth');
+      }
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthLoading(true);
+
+    try {
+      const response = await supabase.functions.invoke('admin-auth', {
+        body: { email, password }
+      });
+
+      if (response.error) {
+        toast.error('Authentication failed');
+        setAuthLoading(false);
+        return;
+      }
+
+      const data = response.data;
+      
+      if (data.success) {
+        sessionStorage.setItem('admin-auth', JSON.stringify({
+          token: data.token,
+          expiry: data.expiry
+        }));
+        setIsAuthenticated(true);
+        toast.success('Welcome, Admin!');
+      } else {
+        toast.error(data.error || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Login failed. Please try again.');
+    }
+
+    setAuthLoading(false);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('admin-auth');
+    setIsAuthenticated(false);
+    setEmail("");
+    setPassword("");
+    toast.success('Logged out successfully');
+  };
 
   const fetchSessionData = useCallback(async () => {
     console.log('Fetching session data...');
@@ -98,6 +165,11 @@ const Admin = () => {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
+
     fetchSessionData();
 
     // Subscribe to realtime session changes
@@ -138,12 +210,63 @@ const Admin = () => {
       supabase.removeChannel(channel);
       clearInterval(interval);
     };
-  }, [fetchSessionData]);
+  }, [fetchSessionData, isAuthenticated]);
 
   const handleViewRoom = (code: string) => {
     // Open room in new tab
     window.open(`/room/${code}`, '_blank');
   };
+
+  // Login UI
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl text-gradient-chutki">Admin Access</CardTitle>
+            <p className="text-muted-foreground mt-2">Enter your credentials to continue</p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={authLoading}>
+                {authLoading ? (
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Lock className="w-4 h-4 mr-2" />
+                )}
+                {authLoading ? 'Authenticating...' : 'Login'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -169,10 +292,16 @@ const Admin = () => {
               Monitor active sessions in real-time
             </p>
           </div>
-          <Button onClick={fetchSessionData} variant="outline" className="gap-2">
-            <RefreshCw className="w-4 h-4" />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={fetchSessionData} variant="outline" className="gap-2">
+              <RefreshCw className="w-4 h-4" />
+              Refresh
+            </Button>
+            <Button onClick={handleLogout} variant="destructive" className="gap-2">
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
